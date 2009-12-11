@@ -8,6 +8,7 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "simclist.h"
 
 #define initiate 0
@@ -23,7 +24,8 @@ struct activity {
 	char *type;
 	int resourceType;
 	int resourceAmount;
-	activity *nextActivity;
+	activity *next;
 };
 
 activity makeActivityNode(activity currentActivity);
+activity *makeActivityList();
