@@ -26,35 +26,41 @@ int main (int argc, const char * argv[]) {
 	
 	scanf("%d", &numberOfTasks);
 	scanf("%d", &numberOfResourceTypes);
+	//The resourceTable indicates how much of each resource a particular task is holding.
+	int resourceTable[numberOfResourceTypes][numberOfTasks];
+
 	
-	//Create a resource table that holds the amount of resources of each type.
-	int resourceTable[numberOfResourceTypes];
+	//Create a resource array that holds the amount of resources of each type.
+	int resourceArray[numberOfResourceTypes];
 	
 	for (int i = 1; i <= numberOfResourceTypes; i++) {
-		scanf("%d", &resourceTable[i]);
+		scanf("%d", &resourceArray[i]);
 	}
 
 	/*** Test the first line of input ***/
-//	printf(" Number of Tasks: %d\n", numberOfTasks);
-//	printf(" Number of Resource Types: %d\n", numberOfResourceTypes);
-//	for (int i = 1; i <= numberOfResourceTypes; i++) {
-//		printf(" Amount of resource %d: %d\n", i, resourceTable[i]);
-//	}
+	printf(" Number of Tasks: %d\n", numberOfTasks);
+	printf(" Number of Resource Types: %d\n", numberOfResourceTypes);
+	for (int i = 1; i <= numberOfResourceTypes; i++) {
+		printf(" Amount of resource %d: %d\n", i, resourceArray[i]);
+	}
+	
 	
 	//taskTable will probably contain pointers to the head of a list of activities
 	activity *taskTable[numberOfTasks];
-	//The while loop reads in all of the activities for each task.
-	
+	activity *headActivity = malloc(sizeof(activity));
+	makeActivityNode(*headActivity);
 }
 
 
-void buildActivityList(activity currentActivity, activity *taskTable[]){
-	scanf("%c", &currentActivity.taskNumber);
+
+/*The best implementation here would be to turn the function below into a makeNode function (make activity).  Then make an activity for every properly formatted line,, and insert that activity into a linked list.*/
+activity makeActivityNode(activity currentActivity){
+	scanf("%d", &currentActivity.taskNumber);
 	//Insert if statement to break if the tasknumber increases.
-	scanf("%c", &currentActivity.delay);
-	scanf("%s", &currentActivity.type);
-	scanf("%c", &currentActivity.resourceType);
-	scanf("%c", &currentActivity.resourceAmount);
+	scanf("%d", &currentActivity.delay);
+	scanf("%s", currentActivity.type);
+	scanf("%d", &currentActivity.resourceType);
+	scanf("%d", &currentActivity.resourceAmount);
 	currentActivity.nextActivity = malloc(sizeof(activity));
-	buildActivityList(*currentActivity.nextActivity, taskTable);
+	return currentActivity;
 }
