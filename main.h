@@ -15,17 +15,18 @@
 #define request 1
 #define release 2
 #define terminate 3
+#define MAX_STRING_LENGTH 10
 
 typedef struct activity activity;
 
 struct activity {
 	int taskNumber;
 	int delay;
-	char *type;
+	char type[MAX_STRING_LENGTH];
 	int resourceType;
 	int resourceAmount;
 	activity *next;
 };
 
-activity makeActivityNode(activity currentActivity);
+activity makeActivityNode();
 activity *makeActivityList();

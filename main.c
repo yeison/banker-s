@@ -48,18 +48,19 @@ int main (int argc, const char * argv[]) {
 	//taskTable will probably contain pointers to the head of a list of activities
 	activity *taskTable[numberOfTasks];
 	taskTable[0] = makeActivityList();
+	printf("DONE");
 	
 }
 
 
 
 /*The best implementation here would be to turn the function below into a makeNode function (make activity).  Then make an activity for every properly formatted line,, and insert that activity into a linked list.*/
-activity makeActivityNode(activity currentActivity){
+activity makeActivityNode(){
+	activity currentActivity;
 	scanf("%d", &currentActivity.delay);
 	scanf("%s", currentActivity.type);
 	scanf("%d", &currentActivity.resourceType);
 	scanf("%d", &currentActivity.resourceAmount);
-	currentActivity.next = malloc(sizeof(activity));
 	return currentActivity;
 }
 
@@ -67,12 +68,16 @@ activity *makeActivityList(){
 	int currentTask;
 	scanf("%d", &currentTask);
 	activity *headActivity = malloc(sizeof(activity));
+	*headActivity = makeActivityNode();
 	(*headActivity).taskNumber = currentTask;
-	activity currentActivity = makeActivityNode(*headActivity);
+	activity *currentActivity = headActivity;
+	scanf("%d", &currentTask);
 	//While statement to finish when the taskNumber increases.
 	while ((*headActivity).taskNumber == currentTask) {
-		currentActivity = 
-		currentActivity = *currentActivity.next;
+		(*currentActivity).next = malloc(sizeof(activity));
+		currentActivity = (*currentActivity).next;
+		(*currentActivity).taskNumber = currentTask;
+		*currentActivity = makeActivityNode();
 		scanf("%d", &currentTask);
 	}
 	
