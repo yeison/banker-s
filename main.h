@@ -6,6 +6,7 @@
  *  Copyright 2009 New York University. All rights reserved.
  *
  */
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -14,18 +15,3 @@
 #define release 2
 #define terminate 3
 #define MAX_STRING_LENGTH 10
-
-typedef struct activity activity;
-
-struct activity {
-	int taskNumber;
-	int delay;
-	char type;
-	int resourceType;
-	int resourceAmount;
-	activity *next;
-};
-
-activity makeActivityNode();
-activity *makeActivityList(activity *taskTable[], activity *taskTableTails[]);
-char getActivityType(char *type);
