@@ -8,8 +8,6 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include "simclist.h"
 
 #define initiate 0
 #define request 1
@@ -22,11 +20,12 @@ typedef struct activity activity;
 struct activity {
 	int taskNumber;
 	int delay;
-	char type[MAX_STRING_LENGTH];
+	char type;
 	int resourceType;
 	int resourceAmount;
 	activity *next;
 };
 
 activity makeActivityNode();
-activity *makeActivityList();
+activity *makeActivityList(activity *taskTable[], activity *taskTableTails[]);
+char getActivityType(char *type);
