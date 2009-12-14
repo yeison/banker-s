@@ -8,6 +8,8 @@
  */
 #include "main.h"
 
+/* An activity is a struct, which contains all of the information from one typical "line" of input.  It also contains a next pointer, so that activity nodes may be arranged in a linked list.  The linked list will be used as a queue.  This way we can maintain task activities in the appropriate order.*/
+
 typedef struct activity activity;
 
 struct activity {
@@ -20,5 +22,5 @@ struct activity {
 };
 
 activity makeActivityNode();
-activity *makeActivityList(activity *taskTable[], activity *taskTableTails[]);
+void makeActivityList(activity *taskTable[], activity *taskTableTails[]);
 char getActivityType(char *type);

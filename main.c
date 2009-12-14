@@ -51,7 +51,16 @@ int main (int argc, const char * argv[]) {
 	activity *taskTableTails[numberOfTasks+1];
 	for (int i = 1; i <= numberOfTasks; i++)
 		taskTableTails[i] = 0;
-	taskTable[0] = makeActivityList(taskTable, taskTableTails);
+	for (int i = 1; i <= 3; i++) {
+		makeActivityList(taskTable, taskTableTails);
+	}
+	
+	activity tempActivity = *taskTable[2];
+	while (tempActivity.next != NULL) {
+		printf("\tThe type of this activity is: %c \n", (*taskTable[2]).type);
+		tempActivity = *tempActivity.next;
+	}
+	
 	printf("DONE");
 	
 }

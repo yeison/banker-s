@@ -21,12 +21,14 @@ activity makeActivityNode(){
 }
 
 
-/*The function below creates a linked list of activityNodes.  This way we can have various parallel lists, each one corresponding to a particular task number.  During each cycle we can pull the next request from each list.*/
-activity *makeActivityList(activity *taskTable[], activity *taskTableTails[]){
+/*The function below creates a linked list of activityNodes, and returns the head of that list.  This way we can have various parallel lists, each one corresponding to a particular task number.  During each cycle we can pull the next request from each list.*/
+void makeActivityList(activity *taskTable[], activity *taskTableTails[]){
 	int currentTask;
+	int headTask;
 	activity *currentActivity;
 	activity *headActivity;
-	scanf("%d", &currentTask); // Read the task of the next activity
+	scanf("%d", &headTask); // Read the task of the next activity
+	currentTask = headTask;
 	// If the task has already been seen, insert the new activity nodes at the end of its corresponding list (queue).
 	if (taskTableTails[currentTask]){
 		currentActivity = taskTableTails[currentTask];
@@ -41,17 +43,19 @@ activity *makeActivityList(activity *taskTable[], activity *taskTableTails[]){
 		scanf("%d", &currentTask); // Read the task of the next activity
 	}
 	//While statement will finish when the taskNumber changes.
-	while ((*headActivity).taskNumber == currentTask) {
+	while (headTask == currentTask) {
 		(*currentActivity).next = malloc(sizeof(activity));
 		currentActivity = (*currentActivity).next;
 		*currentActivity = makeActivityNode();
 		(*currentActivity).taskNumber = currentTask;
 		scanf("%d", &currentTask);
 	}
+	//Identify the last element by pointing its next to NULL.
+	(*currentActivity).next = NULL;
 	//Save the tail of the list in the tail's table.
-	taskTableTails[currentTask] = currentActivity;
+	taskTableTails[headTask] = currentActivity;
 	//Return the head of the list.
-	return headActivity;
+	taskTable[headTask] = headActivity;
 }
 
 //Convert the activity string into a constant corresponding to the type indicated.
