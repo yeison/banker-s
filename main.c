@@ -29,11 +29,9 @@ int main (int argc, const char * argv[]) {
 	scanf("%d", &numberOfResourceTypes);
 	//The resourceTable indicates how much of each resource a particular task is holding.
 	int resourceTable[numberOfResourceTypes][numberOfTasks];
-
 	
 	//Create a resource array that holds the number of resources present for each type.
-	int resourceArray[numberOfResourceTypes+1];
-	
+	int resourceArray[numberOfResourceTypes+1];	
     
 	for (int i = 1; i <= numberOfResourceTypes; i++) {
 		scanf("%d", &resourceArray[i]);
@@ -46,19 +44,20 @@ int main (int argc, const char * argv[]) {
 		printf(" Units for type %d: %d\n", i, resourceArray[i]);
 	}
 	
-	//	int currentTask = (*headActivity).taskNumber;
-	//taskTable will probably contain pointers to the head of a list of activities
+	// taskTable will probably contain pointers to the head of a list of activities
 	activity *taskTable[numberOfTasks+1];
 	activity *taskTableTails[numberOfTasks+1];
-	
+
+	// Initially, tails address is 0 for boolean check
     for (int i = 1; i <= numberOfTasks; i++){
 		taskTableTails[i] = 0;
     }
     
-    // TODO: update this arbitrary 3 to EOF
-	for (int i = 1; i <= 3; i++) {
-		makeActivityList(taskTable, taskTableTails);
-	}
+
+    /* This function will read the entire input file and create queues of
+       actions for each task */
+	makeActivityList(taskTable, taskTableTails);
+
 	
 	activity tempActivity = *taskTable[2];
 	while (tempActivity.next != NULL) {

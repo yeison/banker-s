@@ -15,7 +15,7 @@ typedef struct activity activity;
 struct activity {
 	int taskNumber;
 	int delay;
-	char type;
+	int type;
 	int resourceType;
 	int resourceAmount;
 	activity *next;
@@ -23,4 +23,4 @@ struct activity {
 
 activity* makeActivityNode();
 void makeActivityList(activity *taskTable[], activity *taskTableTails[]);
-char getActivityType(char *type);
+int getActivityType(char *type);

@@ -33,40 +33,31 @@ activity* makeActivityNode(int taskNumber){
  next request from each list.*/
 void makeActivityList(activity *taskTable[], activity *taskTableTails[]){
 	int currentTask;
-	int headTask;
 	activity *currentActivityPtr;
-	activity *headActivityPtr;
-	scanf("%d", &headTask);
+
     // Read the task-number of the next activity and save it as currentTask
-	currentTask = headTask;
-	/* If the task has already been seen, insert the new activity nodes at the 
-	end of its corresponding list (queue).*/
-	if (taskTableTails[currentTask]){
-		currentActivityPtr = taskTableTails[currentTask];
-		headActivityPtr = taskTable[currentTask];
-	}
-	/*Otherwise, the task has not been seen.  Therefore, we start a new queue 
-	for the new task. */
-	else {
-		headActivityPtr = makeActivityNode(currentTask);
-		currentActivityPtr = headActivityPtr;
-		scanf("%d", &currentTask); // Read the task-number of the next activity
-	}
-	// While statement will finish when the taskNumber changes.
-	while (headTask == currentTask) {
-		currentActivityPtr->next = makeActivityNode(currentTask);
-		scanf("%d", &currentTask);
-	}
-	// Identify the last element by pointing its next to NULL.
-	// (*currentActivityPtr).next = NULL; // This should happen auto-magically
-	// Save the tail of the list in the tail's table.
-	taskTableTails[headTask] = currentActivityPtr;
-	// Return the head of the list.
-	taskTable[headTask] = headActivityPtr;
+	while(scanf("%d", &currentTask) != EOF){
+        
+        /* If the task has already been seen, insert the new activity nodes at the
+         end of its corresponding list.*/
+        if (taskTableTails[currentTask]){
+            currentActivityPtr = taskTableTails[currentTask];
+            currentActivityPtr->next = makeActivityNode(currentTask);
+        }
+        /*Otherwise, the task has not been seen.  Therefore, we start a new queue
+         for the new task. */
+        else {
+            currentActivityPtr = makeActivityNode(currentTask);
+            taskTable[currentTask] = currentActivityPtr;
+        }
+        
+        // Save the tail of the list in the tail's table.
+        taskTableTails[currentTask] = currentActivityPtr;
+    }
 }
 
 //Convert the activity string into a constant corresponding to the type indicated.
-char getActivityType(char *type){
+int getActivityType(char *type){
 	if(!strcmp(type, "initiate"))
 		return initiate;
 	else if(!strcmp(type, "request"))
