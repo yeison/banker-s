@@ -21,6 +21,6 @@ struct activity {
 	activity *next;
 };
 
-activity makeActivityNode();
+activity* makeActivityNode();
 void makeActivityList(activity *taskTable[], activity *taskTableTails[]);
 char getActivityType(char *type);

@@ -8,15 +8,21 @@
 
 /*The best implementation here would be to turn the function below into a 
  makeNode function (make activity).  Then make an activity for every properly 
- formatted line,, and insert that activity into a linked list.*/
-activity makeActivityNode(){
-	char type[MAX_STRING_LENGTH];
-	activity currentActivity;
-	scanf("%d", &currentActivity.delay);
+ formatted line, and insert that activity into a linked list.*/
+activity* makeActivityNode(int taskNumber){
+	char type[MAX_STRING_LENGTH] = "";
+	activity *currentActivity = malloc(sizeof(activity));
+    // Set the task-number
+    currentActivity->taskNumber = taskNumber;
+    // Read delay from stdin
+	scanf("%d", &currentActivity->delay);
+    // Read activity type
 	scanf("%s", type);
-	currentActivity.type = getActivityType(type);
-	scanf("%d", &currentActivity.resourceType);
-	scanf("%d", &currentActivity.resourceAmount);
+	currentActivity->type = getActivityType(type);
+    // Read resource type
+	scanf("%d", &currentActivity->resourceType);
+    // Amount of resource for the activity (e.g. resource released/requested) 
+	scanf("%d", &currentActivity->resourceAmount);
 	return currentActivity;
 }
 
@@ -28,39 +34,35 @@ activity makeActivityNode(){
 void makeActivityList(activity *taskTable[], activity *taskTableTails[]){
 	int currentTask;
 	int headTask;
-	activity *currentActivity;
-	activity *headActivity;
-	scanf("%d", &headTask); // Read the task of the next activity
+	activity *currentActivityPtr;
+	activity *headActivityPtr;
+	scanf("%d", &headTask);
+    // Read the task-number of the next activity and save it as currentTask
 	currentTask = headTask;
 	/* If the task has already been seen, insert the new activity nodes at the 
 	end of its corresponding list (queue).*/
 	if (taskTableTails[currentTask]){
-		currentActivity = taskTableTails[currentTask];
-		headActivity = taskTable[currentTask];
+		currentActivityPtr = taskTableTails[currentTask];
+		headActivityPtr = taskTable[currentTask];
 	}
 	/*Otherwise, the task has not been seen.  Therefore, we start a new queue 
 	for the new task. */
 	else {
-		headActivity = malloc(sizeof(activity));
-		*headActivity = makeActivityNode();
-		(*headActivity).taskNumber = currentTask;
-		currentActivity = headActivity;
-		scanf("%d", &currentTask); // Read the task of the next activity
+		headActivityPtr = makeActivityNode(currentTask);
+		currentActivityPtr = headActivityPtr;
+		scanf("%d", &currentTask); // Read the task-number of the next activity
 	}
-	//While statement will finish when the taskNumber changes.
+	// While statement will finish when the taskNumber changes.
 	while (headTask == currentTask) {
-		(*currentActivity).next = malloc(sizeof(activity));
-		currentActivity = (*currentActivity).next;
-		*currentActivity = makeActivityNode();
-		(*currentActivity).taskNumber = currentTask;
+		currentActivityPtr->next = makeActivityNode(currentTask);
 		scanf("%d", &currentTask);
 	}
-	//Identify the last element by pointing its next to NULL.
-	(*currentActivity).next = NULL;
-	//Save the tail of the list in the tail's table.
-	taskTableTails[headTask] = currentActivity;
-	//Return the head of the list.
-	taskTable[headTask] = headActivity;
+	// Identify the last element by pointing its next to NULL.
+	// (*currentActivityPtr).next = NULL; // This should happen auto-magically
+	// Save the tail of the list in the tail's table.
+	taskTableTails[headTask] = currentActivityPtr;
+	// Return the head of the list.
+	taskTable[headTask] = headActivityPtr;
 }
 
 //Convert the activity string into a constant corresponding to the type indicated.

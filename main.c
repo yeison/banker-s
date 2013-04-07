@@ -31,9 +31,10 @@ int main (int argc, const char * argv[]) {
 	int resourceTable[numberOfResourceTypes][numberOfTasks];
 
 	
-	//Create a resource array that holds the amount of resources of each type.
+	//Create a resource array that holds the number of resources present for each type.
 	int resourceArray[numberOfResourceTypes+1];
 	
+    
 	for (int i = 1; i <= numberOfResourceTypes; i++) {
 		scanf("%d", &resourceArray[i]);
 	}
@@ -42,15 +43,19 @@ int main (int argc, const char * argv[]) {
 	printf(" Number of Tasks: %d\n", numberOfTasks);
 	printf(" Number of Resource Types: %d\n", numberOfResourceTypes);
 	for (int i = 1; i <= numberOfResourceTypes; i++) {
-		printf(" Amount of resource %d: %d\n", i, resourceArray[i]);
+		printf(" Units for type %d: %d\n", i, resourceArray[i]);
 	}
 	
 	//	int currentTask = (*headActivity).taskNumber;
 	//taskTable will probably contain pointers to the head of a list of activities
 	activity *taskTable[numberOfTasks+1];
 	activity *taskTableTails[numberOfTasks+1];
-	for (int i = 1; i <= numberOfTasks; i++)
+	
+    for (int i = 1; i <= numberOfTasks; i++){
 		taskTableTails[i] = 0;
+    }
+    
+    // TODO: update this arbitrary 3 to EOF
 	for (int i = 1; i <= 3; i++) {
 		makeActivityList(taskTable, taskTableTails);
 	}
