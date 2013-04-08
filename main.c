@@ -45,24 +45,22 @@ int main (int argc, const char * argv[]) {
 	}
 	
 	// taskTable will probably contain pointers to the head of a list of activities
-	activity *taskTable[numberOfTasks+1];
-	activity *taskTableTails[numberOfTasks+1];
+	activity **taskTable = malloc((numberOfTasks+1)*sizeof(activity *));
+	activity **taskTableTails = malloc((numberOfTasks+1)*sizeof(activity *));
 
 	// Initially, tails address is 0 for boolean check
     for (int i = 1; i <= numberOfTasks; i++){
 		taskTableTails[i] = 0;
     }
     
-
     /* This function will read the entire input file and create queues of
        actions for each task */
 	makeActivityList(taskTable, taskTableTails);
-
 	
-	activity tempActivity = *taskTable[2];
-	while (tempActivity.next != NULL) {
-		printf("\tThe type of this activity is: %c \n", (*taskTable[2]).type);
-		tempActivity = *tempActivity.next;
+	activity *tempActivity = taskTable[1];
+	while (tempActivity != NULL) {
+		printf("\tThe type of this activity is: %s \n", getActivityType(taskTable[2]->type));
+		tempActivity = tempActivity->next;
 	}
 	
 	printf("DONE");

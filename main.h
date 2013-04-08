@@ -9,9 +9,3 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#define initiate 0
-#define request 1
-#define release 2
-#define terminate 3
-#define MAX_STRING_LENGTH 10

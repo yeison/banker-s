@@ -18,7 +18,7 @@ activity* makeActivityNode(int taskNumber){
 	scanf("%d", &currentActivity->delay);
     // Read activity type
 	scanf("%s", type);
-	currentActivity->type = getActivityType(type);
+	currentActivity->type = getActivityTypeValue(type);
     // Read resource type
 	scanf("%d", &currentActivity->resourceType);
     // Amount of resource for the activity (e.g. resource released/requested) 
@@ -39,7 +39,7 @@ void makeActivityList(activity *taskTable[], activity *taskTableTails[]){
 	while(scanf("%d", &currentTask) != EOF){
         
         /* If the task has already been seen, insert the new activity nodes at the
-         end of its corresponding list.*/
+           end of its corresponding list. */
         if (taskTableTails[currentTask]){
             currentActivityPtr = taskTableTails[currentTask];
             currentActivityPtr->next = makeActivityNode(currentTask);
@@ -57,17 +57,38 @@ void makeActivityList(activity *taskTable[], activity *taskTableTails[]){
 }
 
 //Convert the activity string into a constant corresponding to the type indicated.
-int getActivityType(char *type){
+int getActivityTypeValue(char *type){
 	if(!strcmp(type, "initiate"))
-		return initiate;
+		return INITIATE;
 	else if(!strcmp(type, "request"))
-		return request;
+		return REQUEST;
 	else if(!strcmp(type, "release"))
-		return release;
+		return RELEASE;
 	else if(!strcmp(type, "terminate"))
-		return terminate;
+		return TERMINATE;
 	else {
 		perror("Activity type requested is unknown.  Please use proper formatting.");
 		exit(2);
 	}
+}
+
+char* getActivityType(int activityTypeValue){
+    
+    switch (activityTypeValue) {
+        case INITIATE:
+            return "initiate";
+            
+        case REQUEST:
+            return "request";
+            
+        case RELEASE:
+            return "release";
+
+        case TERMINATE:
+            return "terminate";
+            
+        default:
+            return "";
+    }
+
 }
