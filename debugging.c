@@ -10,13 +10,20 @@
 #include "activity.h"
 
 
+// Pass in a task table and its size to print the contents
 void printQueues(activity** taskTable, int numberOfTasks){
     
     for (int i=0; i < numberOfTasks; i++) {
         printf("\nTask %d:\n", i+1);
         activity *tempActivity = taskTable[i];
         while (tempActivity != NULL) {
-            printf("\tThe type of this activity is: %s \n", getActivityType(tempActivity->type));
+            printf("\t%2d %2d %10s %2d %2d\n",
+                   tempActivity->taskNumber+1,
+                   tempActivity->delay,
+                   getActivityType(tempActivity->type),
+                   tempActivity->resourceType,
+                   tempActivity->resourceAmount);
+            
             tempActivity = tempActivity->next;
         }
     }    

@@ -42,23 +42,19 @@ int main (int argc, const char * argv[]) {
 	printf(" Number of Tasks: %d\n", numberOfTasks);
 	printf(" Number of Resource Types: %d\n", numberOfResourceTypes);
 	for (int i = 1; i <= numberOfResourceTypes; i++) {
-		printf(" Units for type %d: %d\n", i, resourceArray[i]);
+		printf(" Units for resource-type %d: %d\n", i, resourceArray[i]);
 	}
 	
 	// taskTable will probably contain pointers to the head of a list of activities
 	activity **taskTable = malloc((numberOfTasks+1)*sizeof(activity *));
 	activity **taskTableTails = malloc((numberOfTasks+1)*sizeof(activity *));
 
-//	// Initially, tails address is 0 for boolean check
-//    for (int i = 1; i <= numberOfTasks; i++){
-//		taskTableTails[i] = 0;
-//    }
     
     /* This function will read the entire input file and create queues of
        actions for each task */
 	makeActivityList(taskTable, taskTableTails);	
     printQueues(taskTable, numberOfTasks);
 	
-	printf("DONE");
+	printf("\nDONE");
 	
 }
