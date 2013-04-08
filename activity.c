@@ -6,9 +6,9 @@
  */
 #include "activity.h"
 
-/*The best implementation here would be to turn the function below into a 
- makeNode function (make activity).  Then make an activity for every properly 
- formatted line, and insert that activity into a linked list.*/
+/* The best implementation here would be to turn the function below into a
+   makeNode function (make activity).  Then make an activity for every properly
+   formatted line, and insert that activity into a linked list. */
 activity* makeActivityNode(int taskNumber){
 	char type[MAX_STRING_LENGTH] = "";
 	activity *currentActivity = malloc(sizeof(activity));
@@ -27,10 +27,10 @@ activity* makeActivityNode(int taskNumber){
 }
 
 
-/*The function below creates a linked list of activityNodes, and returns the 
- head of that list.  This way we can have various parallel lists, each one 
- corresponding to a particular task number.  During each cycle we can pull the 
- next request from each list.*/
+/* The function below creates a linked list of activityNodes, and returns the
+   head of that list.  This way we can have various parallel lists, each one
+   corresponding to a particular task number.  During each cycle we can pull the
+   next request from each list. */
 void makeActivityList(activity *taskTable[], activity *taskTableTails[]){
 	int currentTask;
 	activity *currentActivityPtr;
@@ -40,23 +40,24 @@ void makeActivityList(activity *taskTable[], activity *taskTableTails[]){
         
         /* If the task has already been seen, insert the new activity nodes at the
            end of its corresponding list. */
-        if (taskTableTails[currentTask]){
-            currentActivityPtr = taskTableTails[currentTask];
-            currentActivityPtr->next = makeActivityNode(currentTask);
+        if (taskTableTails[currentTask-1]){
+            currentActivityPtr = taskTableTails[currentTask-1];
+            currentActivityPtr->next = makeActivityNode(currentTask-1);
+            currentActivityPtr = currentActivityPtr->next;
         }
-        /*Otherwise, the task has not been seen.  Therefore, we start a new queue
-         for the new task. */
+        /* Otherwise, the task has not been seen.  Therefore, we start a new queue
+           for the new task. */
         else {
-            currentActivityPtr = makeActivityNode(currentTask);
-            taskTable[currentTask] = currentActivityPtr;
+            currentActivityPtr = makeActivityNode(currentTask-1);
+            taskTable[currentTask-1] = currentActivityPtr;
         }
         
         // Save the tail of the list in the tail's table.
-        taskTableTails[currentTask] = currentActivityPtr;
+        taskTableTails[currentTask-1] = currentActivityPtr;
     }
 }
 
-//Convert the activity string into a constant corresponding to the type indicated.
+// Convert the activity string into a constant corresponding to the type indicated.
 int getActivityTypeValue(char *type){
 	if(!strcmp(type, "initiate"))
 		return INITIATE;
