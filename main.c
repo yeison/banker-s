@@ -28,32 +28,75 @@ int main (int argc, const char * argv[]) {
 	
 	scanf("%d", &numberOfTasks);
 	scanf("%d", &numberOfResourceTypes);
-	//The resourceTable indicates how much of each resource a particular task is holding.
-	int resourceTable[numberOfResourceTypes][numberOfTasks];
+	/* The resourceTable keeps track of how much of each resource a particular task
+    has requested. */
+	int resourceRequestTable[numberOfResourceTypes][numberOfTasks];
+    // The state array keeps track of the task's previous state
+    int previousState[numberOfTasks];
+    // The state array keeps track of the task's state
+    int currentState[numberOfTasks];
 	
-	//Create a resource array that holds the number of resources present for each type.
-	int resourceArray[numberOfResourceTypes+1];	
+	// Create a resource array that holds the amount of resource available of each type.
+	int resourceArray[numberOfResourceTypes];	
     
-	for (int i = 1; i <= numberOfResourceTypes; i++) {
+	for (int i = 0; i < numberOfResourceTypes; i++) {
+        // Initialize resource array values
 		scanf("%d", &resourceArray[i]);
 	}
 
 	/*** Test the first line of input ***/
 	printf(" Number of Tasks: %d\n", numberOfTasks);
 	printf(" Number of Resource Types: %d\n", numberOfResourceTypes);
-	for (int i = 1; i <= numberOfResourceTypes; i++) {
-		printf(" Units for resource-type %d: %d\n", i, resourceArray[i]);
+	for (int i = 0; i < numberOfResourceTypes; i++) {
+		printf(" Units of resource-type %d: %d\n", i+1, resourceArray[i]);
 	}
 	
-	// taskTable will probably contain pointers to the head of a list of activities
+	/* taskTable will contain pointers to the head of a queue of activities.
+       The taskTable index corresponds to the task number (zero-based counting). 
+       An additional bit of buffer space is being allocated. */
 	activity **taskTable = malloc((numberOfTasks+1)*sizeof(activity *));
 	activity **taskTableTails = malloc((numberOfTasks+1)*sizeof(activity *));
 
     
     /* This function will read the entire input file and create queues of
-       actions for each task */
-	makeActivityList(taskTable, taskTableTails);	
+       actions (activities) for each task */
+	makeActivityQueues(taskTable, taskTableTails);	
     printQueues(taskTable, numberOfTasks);
+    
+    
+    // Copy head pointers
+    activity **currentActivity = malloc((numberOfTasks+1)*sizeof(activity *));
+    for (int i=0; i < numberOfTasks; i++) {
+        currentActivity[i] = taskTable[i];
+    }
+    
+    // Process activities in each task queue
+    for (int i=0; i < numberOfTasks; i++) {
+        
+        // If there are no more activities, continue to next task
+        if(currentActivity == NULL){
+            continue;
+        }
+        
+        switch (currentActivity[i]->type) {
+            case INITIATE:
+                // If state is 0 (not initiated) then initiate
+                if (!previousState[currentActivity[i]->taskNumber]) {
+                    currentState[currentActivity[i]->taskNumber] = INITIATE;
+                }
+                break;
+            
+            case REQUEST:                
+                break;
+                
+                
+            default:
+                break;
+        }
+        
+        // Move the pointer forward to the next activity in the linked list
+        currentActivity[i] = currentActivity[i]->next;
+    }
 	
 	printf("\nDONE");
 	

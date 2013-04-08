@@ -31,7 +31,7 @@ activity* makeActivityNode(int taskNumber){
    head of that list.  This way we can have various parallel lists, each one
    corresponding to a particular task number.  During each cycle we can pull the
    next request from each list. */
-void makeActivityList(activity *taskTable[], activity *taskTableTails[]){
+void makeActivityQueues(activity *taskTable[], activity *taskTableTails[]){
 	int currentTask;
 	activity *currentActivityPtr;
 

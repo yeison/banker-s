@@ -10,6 +10,7 @@
 		4B99644111EE9F5C002AA055 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B99643F11EE9F5C002AA055 /* main.c */; };
 		4BF578431711E47F008405BE /* activity.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B99643B11EE9EFB002AA055 /* activity.c */; };
 		4BF5784617124C7C008405BE /* debugging.c in Sources */ = {isa = PBXBuildFile; fileRef = 4BF5784517124C7C008405BE /* debugging.c */; };
+		4BF578491712633B008405BE /* optimistic.c in Sources */ = {isa = PBXBuildFile; fileRef = 4BF578481712633B008405BE /* optimistic.c */; };
 		8DD76FB00486AB0100D96B5E /* bankers.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* bankers.1 */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +35,9 @@
 		4B99644311EE9F72002AA055 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		4BF5784417124BE5008405BE /* debugging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = debugging.h; sourceTree = "<group>"; };
 		4BF5784517124C7C008405BE /* debugging.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = debugging.c; sourceTree = "<group>"; };
+		4BF5784717126325008405BE /* optimistic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = optimistic.h; sourceTree = "<group>"; };
+		4BF578481712633B008405BE /* optimistic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = optimistic.c; sourceTree = "<group>"; };
+		4BF5784A171263BB008405BE /* dijkstras.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dijkstras.h; sourceTree = "<group>"; };
 		8DD76FB20486AB0100D96B5E /* bankers */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bankers; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A0FF2C0290799A04C91782 /* bankers.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = bankers.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,6 +72,9 @@
 				4B99643C11EE9EFB002AA055 /* activity.h */,
 				4BF5784417124BE5008405BE /* debugging.h */,
 				4BF5784517124C7C008405BE /* debugging.c */,
+				4BF5784717126325008405BE /* optimistic.h */,
+				4BF578481712633B008405BE /* optimistic.c */,
+				4BF5784A171263BB008405BE /* dijkstras.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -139,6 +146,7 @@
 				4BF578431711E47F008405BE /* activity.c in Sources */,
 				4B99644111EE9F5C002AA055 /* main.c in Sources */,
 				4BF5784617124C7C008405BE /* debugging.c in Sources */,
+				4BF578491712633B008405BE /* optimistic.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

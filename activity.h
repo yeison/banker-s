@@ -24,14 +24,14 @@ struct activity {
 // Create an activity node (an action to be performed on a task)
 activity* makeActivityNode();
 // Create queues of actions(activities) for each task
-void makeActivityList(activity *taskTable[], activity *taskTableTails[]);
+void makeActivityQueues(activity *taskTable[], activity *taskTableTails[]);
 // Retrieve the integer value for the string type
 int getActivityTypeValue(char *type);
 // Retrieve string-value for the activity type
 char* getActivityType(int activityTypeValue);
 
-#define INITIATE 0
-#define REQUEST 1
-#define RELEASE 2
-#define TERMINATE 3
+#define INITIATE 1
+#define REQUEST 2
+#define RELEASE 3
+#define TERMINATE 4
 #define MAX_STRING_LENGTH 10
