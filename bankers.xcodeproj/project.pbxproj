@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4B99644111EE9F5C002AA055 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B99643F11EE9F5C002AA055 /* main.c */; };
 		4BF578431711E47F008405BE /* activity.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B99643B11EE9EFB002AA055 /* activity.c */; };
+		4BF5784617124C7C008405BE /* debugging.c in Sources */ = {isa = PBXBuildFile; fileRef = 4BF5784517124C7C008405BE /* debugging.c */; };
 		8DD76FB00486AB0100D96B5E /* bankers.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* bankers.1 */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,8 @@
 		4B99643F11EE9F5C002AA055 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		4B99644011EE9F5C002AA055 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		4B99644311EE9F72002AA055 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		4BF5784417124BE5008405BE /* debugging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = debugging.h; sourceTree = "<group>"; };
+		4BF5784517124C7C008405BE /* debugging.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = debugging.c; sourceTree = "<group>"; };
 		8DD76FB20486AB0100D96B5E /* bankers */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = bankers; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A0FF2C0290799A04C91782 /* bankers.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = bankers.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -63,6 +66,8 @@
 				4B99644011EE9F5C002AA055 /* main.h */,
 				4B99643B11EE9EFB002AA055 /* activity.c */,
 				4B99643C11EE9EFB002AA055 /* activity.h */,
+				4BF5784417124BE5008405BE /* debugging.h */,
+				4BF5784517124C7C008405BE /* debugging.c */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -133,6 +138,7 @@
 			files = (
 				4BF578431711E47F008405BE /* activity.c in Sources */,
 				4B99644111EE9F5C002AA055 /* main.c in Sources */,
+				4BF5784617124C7C008405BE /* debugging.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

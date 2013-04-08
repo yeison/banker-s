@@ -1,5 +1,6 @@
 #include "main.h"
 #include "activity.h"
+#include "debugging.h"
 
 int main (int argc, const char * argv[]) {
 	if (argc < 2) {
@@ -55,13 +56,8 @@ int main (int argc, const char * argv[]) {
     
     /* This function will read the entire input file and create queues of
        actions for each task */
-	makeActivityList(taskTable, taskTableTails);
-	
-	activity *tempActivity = taskTable[1];
-	while (tempActivity != NULL) {
-		printf("\tThe type of this activity is: %s \n", getActivityType(tempActivity->type));
-		tempActivity = tempActivity->next;
-	}
+	makeActivityList(taskTable, taskTableTails);	
+    printQueues(taskTable, numberOfTasks);
 	
 	printf("DONE");
 	

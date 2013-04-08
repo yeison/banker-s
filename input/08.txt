@@ -1,0 +1,9 @@
+2 1 4
+1 0 initiate  1 4
+1 0 request   1 1
+2 0 initiate  1 4
+2 0 request   1 1
+1 0 release   1 1
+2 0 release   1 1
+1 0 terminate 0 0
+2 0 terminate 0 0
