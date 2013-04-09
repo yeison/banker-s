@@ -9,3 +9,5 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+
+void copyResourceArray(int *from, int *to, int size);

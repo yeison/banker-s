@@ -31,24 +31,30 @@ int main (int argc, const char * argv[]) {
 	/* The resourceTable keeps track of how much of each resource a particular task
     has requested. */
 	int resourceRequestTable[numberOfResourceTypes][numberOfTasks];
+
     // The state array keeps track of the task's previous state
-    int previousState[numberOfTasks];
+    int *previousState = malloc(numberOfTasks*sizeof(int));
     // The state array keeps track of the task's state
-    int currentState[numberOfTasks];
+    int *currentState = malloc(numberOfTasks*sizeof(int));
+    
 	
-	// Create a resource array that holds the amount of resource available of each type.
-	int resourceArray[numberOfResourceTypes];	
+	// Create resource arrays that track the amount of resource available of each type.
+	int *previousResources = malloc(numberOfResourceTypes*sizeof(int));
+  	int *currentResources = malloc(numberOfResourceTypes*sizeof(int));
+  	int *nextResources = malloc(numberOfResourceTypes*sizeof(int));
     
 	for (int i = 0; i < numberOfResourceTypes; i++) {
         // Initialize resource array values
-		scanf("%d", &resourceArray[i]);
+		scanf("%d", &previousResources[i]);
+        nextResources[i] = currentResources[i] = previousResources[i];
+
 	}
 
 	/*** Test the first line of input ***/
 	printf(" Number of Tasks: %d\n", numberOfTasks);
 	printf(" Number of Resource Types: %d\n", numberOfResourceTypes);
 	for (int i = 0; i < numberOfResourceTypes; i++) {
-		printf(" Units of resource-type %d: %d\n", i+1, resourceArray[i]);
+		printf(" Units of resource-type %d: %d\n", i+1, currentResources[i]);
 	}
 	
 	/* taskTable will contain pointers to the head of a queue of activities.
@@ -62,42 +68,127 @@ int main (int argc, const char * argv[]) {
        actions (activities) for each task */
 	makeActivityQueues(taskTable, taskTableTails);	
     printQueues(taskTable, numberOfTasks);
+   
     
+    /*****************************************************************************/
+    /* The meaty resource manager implementations */
     
-    // Copy head pointers
+    // Perform some initialization tasks
     activity **currentActivity = malloc((numberOfTasks+1)*sizeof(activity *));
     for (int i=0; i < numberOfTasks; i++) {
+        // Copy task-queue head pointers
         currentActivity[i] = taskTable[i];
+        // Set all states to 0
+        previousState[i] = 0;
     }
     
-    // Process activities in each task queue
-    for (int i=0; i < numberOfTasks; i++) {
+    // Optimistic manager: process activities in each task queue
+    int termCount = 0;
+    int i = -1;
+    int cycle = -1;
+    printf("\nCycle: %d\n", cycle+1);
+    printf("**************\n");
+    while (termCount < numberOfTasks) {
+        i++;
+        cycle++;
         
-        // If there are no more activities, continue to next task
-        if(currentActivity == NULL){
+        // Check if next cycle is a new cycle; then update table pointers and reset counters
+        if (i%numberOfTasks == 0 && cycle != 0) {
+            int *tempPtr = previousState;
+            previousState = currentState;
+            currentState = tempPtr;
+            
+
+            tempPtr = previousResources;
+            previousResources = currentResources;
+            currentResources = tempPtr;
+            copyResourceArray(previousResources, nextResources, numberOfResourceTypes);
+            
+            termCount = 0;
+            i = 0;
+            printf("\nCycle: %d\n", (cycle/numberOfTasks));
+            printf("**************\n");
+        }
+
+        // If there are no more activities for this task, continue to next task
+        if(currentActivity[i] == NULL){
+            // Break if we have NULLs equal to numberOfTasks
+            if(numberOfTasks == ++termCount){
+                break;
+            }
             continue;
         }
         
-        switch (currentActivity[i]->type) {
+        activity *activity = currentActivity[i];
+        switch (activity->type) {
             case INITIATE:
                 // If state is 0 (not initiated) then initiate
-                if (!previousState[currentActivity[i]->taskNumber]) {
-                    currentState[currentActivity[i]->taskNumber] = INITIATE;
+                if (!previousState[i]) {
+                    currentState[i] = INITIATE;
                 }
                 break;
             
-            case REQUEST:                
+            case REQUEST:
+                if(previousState[i] == INITIATE){
+                    // If resource of this type is available and sufficient for request
+                    if (previousResources[activity->resourceType] >= activity->resourceAmount
+                        && currentResources[activity->resourceType] >= activity->resourceAmount) {
+                        currentResources[activity->resourceType] = currentResources[activity->resourceType] - activity->resourceAmount;
+                        nextResources[activity->resourceType] = currentResources[activity->resourceType];
+                        currentState[i] = GRANTED;
+                        printf("\nGRANTED %d units of resource %d to task %d.\n\tRemaining: %d\n",
+                               activity->resourceAmount,
+                               activity->resourceType+1,
+                               activity->taskNumber+1,
+                               currentResources[activity->resourceType]);
+                    } else {
+                        printf("\nCould NOT grant %d units of resource %d to task %d: only %d available\n",
+                               activity->resourceAmount,
+                               activity->resourceType+1,
+                               activity->taskNumber+1,
+                               currentResources[activity->resourceType]);
+                        currentState[i] = REJECTED;
+                    }
+                } else {
+                    perror("\nCannot perform REQUEST, previous state was not INITIATE.\n");
+                    exit(2);
+                }
                 break;
-                
+
+            case RELEASE:
+                if (previousState[i] == GRANTED || previousState[i] == RELEASE) {
+                    nextResources[activity->resourceType] = nextResources[activity->resourceType] + activity->resourceAmount;
+                    currentState[i] = RELEASE;
+                    printf("\nTask %d RELEASED %d units of resource %d.\n\tAvailable Next Cycle: %d\n",
+                           activity->taskNumber+1,
+                           activity->resourceAmount,
+                           activity->resourceType+1,
+                           nextResources[activity->resourceType]);
+                } else {
+                    perror("\nCannot perform RELEASE, previous state was not REQUEST or RELEASE.\n");
+                    exit(3);
+                }
+
+                break;
                 
             default:
                 break;
         }
         
         // Move the pointer forward to the next activity in the linked list
-        currentActivity[i] = currentActivity[i]->next;
+        currentActivity[i] = currentActivity[i]->next;        
+
+        
     }
 	
 	printf("\nDONE");
 	
+}
+
+void copyResourceArray(int *from, int *to, int size){
+    
+    for (int i = 0; i < size; i++) {
+        to[i] = from[i];
+    }    
+
 }

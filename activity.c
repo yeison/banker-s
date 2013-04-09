@@ -21,6 +21,7 @@ activity* makeActivityNode(int taskNumber){
 	currentActivity->type = getActivityTypeValue(type);
     // Read resource type
 	scanf("%d", &currentActivity->resourceType);
+    currentActivity->resourceType = currentActivity->resourceType-1;
     // Amount of resource for the activity (e.g. resource released/requested) 
 	scanf("%d", &currentActivity->resourceAmount);
 	return currentActivity;

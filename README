@@ -1,3 +1,6 @@
 Error checking:
     Input:
         Check order of activities for each task
+
+
+Don't forget to free memory allocations

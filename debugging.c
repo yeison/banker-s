@@ -21,7 +21,7 @@ void printQueues(activity** taskTable, int numberOfTasks){
                    tempActivity->taskNumber+1,
                    tempActivity->delay,
                    getActivityType(tempActivity->type),
-                   tempActivity->resourceType,
+                   tempActivity->resourceType+1,
                    tempActivity->resourceAmount);
             
             tempActivity = tempActivity->next;

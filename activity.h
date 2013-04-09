@@ -34,4 +34,6 @@ char* getActivityType(int activityTypeValue);
 #define REQUEST 2
 #define RELEASE 3
 #define TERMINATE 4
+#define GRANTED 5
+#define REJECTED 6
 #define MAX_STRING_LENGTH 10
