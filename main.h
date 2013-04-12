@@ -9,5 +9,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 void copyResourceArray(int *from, int *to, int size);
+
+bool checkDeadLock(int resourceType, int **resourceRequestTable, int numberOfTasks);

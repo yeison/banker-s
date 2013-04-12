@@ -30,10 +30,10 @@ int getActivityTypeValue(char *type);
 // Retrieve string-value for the activity type
 char* getActivityType(int activityTypeValue);
 
-#define INITIATE 1
-#define REQUEST 2
-#define RELEASE 3
-#define TERMINATE 4
-#define GRANTED 5
-#define REJECTED 6
+#define TERMINATE 1
+#define INITIATE 2
+#define REQUEST 3
+#define RELEASE 4
+#define GRANTED 6
+#define REJECTED 7
 #define MAX_STRING_LENGTH 10

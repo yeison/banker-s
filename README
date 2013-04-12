@@ -4,3 +4,6 @@ Error checking:
 
 
 Don't forget to free memory allocations
+
+If initial claim is exceeded for bankers, abort task, print error message
+
