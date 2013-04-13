@@ -12,8 +12,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 
 void copyResourceArray(int *from, int *to, int size);
 
 // Aborts lowest-numbered deadlocked process, and releases claimed resources
-bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity);
+bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity, int *minRequest);
