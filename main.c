@@ -1,5 +1,4 @@
 #include "main.h"
-#include "activity.h"
 #include "debugging.h"
 
 
@@ -29,17 +28,14 @@ int main (int argc, const char * argv[]) {
 	
 	scanf("%d", &numberOfTasks);
 	scanf("%d", &numberOfResourceTypes);
-	/* The resourceTable keeps track of how much of each resource a particular task
-    has requested. */
-    int **resourceRequestTable = malloc(numberOfResourceTypes * sizeof(*resourceRequestTable));
-    int *resourceRequestArray = malloc(numberOfResourceTypes*sizeof(int));
+	/* The resourceLockTable keeps track of how much of each resource a particular task
+    has been granted. */
+    int **resourceLockTable = malloc(numberOfResourceTypes * sizeof(*resourceLockTable));
 
     // malloc the two-dimensional array
-    if (resourceRequestTable)
-    {
-        for (int i = 0; i < numberOfResourceTypes; i++)
-        {
-            resourceRequestTable[i] = malloc(numberOfTasks * sizeof(*resourceRequestTable[i]));
+    if(resourceLockTable){
+        for(int i = 0; i < numberOfResourceTypes; i++){
+            resourceLockTable[i] = malloc(numberOfTasks * sizeof(*resourceLockTable[i]));
         }
     }
 
@@ -51,14 +47,14 @@ int main (int argc, const char * argv[]) {
 	
 	// Create resource arrays that track the amount of resource available of each type.
   	int *defaultResources = malloc(numberOfResourceTypes*sizeof(int));
-	int *previousResources = malloc(numberOfResourceTypes*sizeof(int));
+	int *initialResources = malloc(numberOfResourceTypes*sizeof(int));
   	int *currentResources = malloc(numberOfResourceTypes*sizeof(int));
   	int *nextResources = malloc(numberOfResourceTypes*sizeof(int));
     
 	for (int i = 0; i < numberOfResourceTypes; i++) {
         // Initialize resource array values
 		scanf("%d", &defaultResources[i]);
-        nextResources[i] = currentResources[i] = previousResources[i] = defaultResources[i];
+        nextResources[i] = currentResources[i] = initialResources[i] = defaultResources[i];
 
 	}
 
@@ -83,7 +79,7 @@ int main (int argc, const char * argv[]) {
    
     
     /*****************************************************************************/
-    /* The meaty resource manager implementations */
+    /* The meaty resource manager implementation */
     
     // Perform some initialization tasks
     activity **currentActivity = malloc((numberOfTasks+1)*sizeof(activity *));
@@ -96,6 +92,7 @@ int main (int argc, const char * argv[]) {
     
     // Optimistic manager: process activities in each task queue
     int termCount = 0;
+    int waitingCount = 0;
     int i = -1;
     int cycle = -1;
     printf("\nCycle: %d\n", cycle+1);
@@ -107,18 +104,27 @@ int main (int argc, const char * argv[]) {
         cycle++;
         
         // Check if next cycle is a new cycle; then update table pointers and reset counters
-        if (i%numberOfTasks == 0 && cycle != 0) {
+        if (i%numberOfTasks == 0 && cycle != 0) {            
+            
             int *tempPtr = previousState;
             previousState = currentState;
             currentState = tempPtr;
             
-            tempPtr = previousResources;
-            previousResources = currentResources;
-            currentResources = tempPtr;
-            copyResourceArray(previousResources, currentResources, numberOfResourceTypes);
-            copyResourceArray(previousResources, nextResources, numberOfResourceTypes);
+            tempPtr = initialResources;
+            initialResources = nextResources;
+            currentResources = nextResources;
+            nextResources = tempPtr;
+//            copyResourceArray(previousResources, currentResources, numberOfResourceTypes);
+            copyResourceArray(initialResources, nextResources, numberOfResourceTypes);
+            
+            // If all tasks are waiting, we have a deadlock
+            if (waitingCount == numberOfTasks) {
+                resolveDeadlock(resourceLockTable, numberOfTasks, numberOfResourceTypes, currentResources, currentActivity);
+            }
+            
             
             termCount = 0;
+            waitingCount = 0;
             i = 0;
             printf("\nCycle: %d\n", (cycle/numberOfTasks));
             printf("**************\n");
@@ -145,7 +151,7 @@ int main (int argc, const char * argv[]) {
             case REQUEST:
                 if(previousState[i] >= INITIATE ){
                     // If resource of this type is available and sufficient for request
-                    if (previousResources[activity->resourceType] >= activity->resourceAmount
+                    if (initialResources[activity->resourceType] >= activity->resourceAmount
                         && currentResources[activity->resourceType] >= activity->resourceAmount) {
                         currentResources[activity->resourceType] = currentResources[activity->resourceType] - activity->resourceAmount;
                         nextResources[activity->resourceType] = currentResources[activity->resourceType];
@@ -155,15 +161,16 @@ int main (int argc, const char * argv[]) {
                                activity->resourceType+1,
                                activity->taskNumber+1,
                                currentResources[activity->resourceType]);
+                        resourceLockTable[activity->resourceType][activity->taskNumber] = activity->resourceAmount;
                     } else {
                         printf("\nCould NOT grant %d units of resource %d to task %d: only %d available\n",
                                activity->resourceAmount,
                                activity->resourceType+1,
                                activity->taskNumber+1,
                                currentResources[activity->resourceType]);
-                        checkDeadLock(activity->resourceType, resourceRequestTable, numberOfTasks);
-                        currentState[i] = REJECTED;
-                        
+                        //checkDeadLock(activity->resourceType, resourceRequestTable, numberOfTasks);
+                        currentState[i] = WAITING;
+                        waitingCount++;
                     }
                 } else {
                     perror("\nCannot perform REQUEST, previous state was not INITIATE.\n");
@@ -178,24 +185,28 @@ int main (int argc, const char * argv[]) {
                         nextResources[activity->resourceType] = defaultResources[activity->resourceType];
                     }
                     currentState[i] = RELEASE;
-                    printf("\nTask %d RELEASED %d units of resource %d.\n\tAvailable Next Cycle: %d\n",
+                    printf("\nTask %d RELEASED %d units of resource %d.\n\tUnits available next cycle: %d\n",
                            activity->taskNumber+1,
                            activity->resourceAmount,
                            activity->resourceType+1,
                            nextResources[activity->resourceType]);
+                    resourceLockTable[activity->resourceType][activity->taskNumber] = nextResources[activity->resourceType];
                 } else {
                     perror("\nCannot perform RELEASE, previous state was not REQUEST or RELEASE.\n");
                     exit(3);
                 }
 
                 break;
+            
+            case TERMINATE:
+                termCount++;
                 
             default:
                 break;
         }
         
         // On success move the pointer forward to the next activity in the linked list
-        if (currentState[i] != REJECTED) {
+        if (currentState[i] != WAITING && activity->type != TERMINATE ) {
             currentActivity[i] = currentActivity[i]->next;
         }
         
@@ -213,15 +224,29 @@ void copyResourceArray(int *from, int *to, int size){
 
 }
 
-bool checkDeadLock(int resourceType, int **resourceRequestTable, int numberOfTasks){
-    int firstWaitingTask;
+bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity){
     
-    for (int j = 0; j < numberOfTasks; j++) {
-        if(resourceRequestTable[resourceType][j]){
-            firstWaitingTask = resourceRequestTable[resourceType][j];
+    printf("\nResolving Deadlock\n");
+    
+    for (int i = 0; i < numberOfTasks; i++) {
+        for (int j = 0; j < numberOfResourceTypes; j++) {            
+            if(resourceLockTable[i][j]){
+                printf("\nAborting task %d\n", i+1);
+                currentActivity[i]->type = TERMINATE;
+                
+                while (j < numberOfResourceTypes) {
+                    int resourceAmount = resourceLockTable[i][j];
+                    printf("Task %d forced to release %d units of resource %d\n", i+1, resourceAmount, j+1);
+                    //fflush(stdout);
+                    currentResources[j] += resourceAmount;
+                    resourceLockTable[i][j] = 0;
+                    j++;
+                }
+                return true;
+            }
         }
     }
     
-
+    return false;
     
 }

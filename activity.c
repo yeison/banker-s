@@ -5,6 +5,7 @@
  *
  */
 #include "activity.h"
+#include <stdio.h>
 
 /* The best implementation here would be to turn the function below into a
    makeNode function (make activity).  Then make an activity for every properly

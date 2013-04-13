@@ -6,7 +6,6 @@
  *  Copyright 2009 New York University. All rights reserved.
  *
  */
-#include "main.h"
 
 /* An activity is a struct, which contains all of the information from one typical "line" of input.  It also contains a next pointer, so that activity nodes may be arranged in a linked list.  The linked list will be used as a queue.  This way we can maintain task activities in the appropriate order.*/
 
@@ -18,6 +17,7 @@ struct activity {
 	int type;
 	int resourceType;
 	int resourceAmount;
+    int currentState;
 	activity *next;
 };
 
@@ -35,5 +35,5 @@ char* getActivityType(int activityTypeValue);
 #define REQUEST 3
 #define RELEASE 4
 #define GRANTED 6
-#define REJECTED 7
+#define WAITING 7
 #define MAX_STRING_LENGTH 10

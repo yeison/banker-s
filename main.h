@@ -7,10 +7,13 @@
  *
  */
 
+#include "activity.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 
+
 void copyResourceArray(int *from, int *to, int size);
 
-bool checkDeadLock(int resourceType, int **resourceRequestTable, int numberOfTasks);
+// Aborts lowest-numbered deadlocked process, and releases claimed resources
+bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity);
