@@ -159,21 +159,21 @@ int main (int argc, const char * argv[]) {
                         currentResources[activityN->resourceType] = currentResources[activityN->resourceType] - activityN->resourceAmount;
                         nextResources[activityN->resourceType] = currentResources[activityN->resourceType];
                         currentState[i] = GRANTED;
-                        printf("\nGRANTED %d units of resource %d to task %d.\n\tRemaining: %d\n",
+                        printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
                                activityN->taskNumber+1,
                                currentResources[activityN->resourceType]);
                         resourceLockTable[activityN->resourceType][activityN->taskNumber] = activityN->resourceAmount;
                     } else {
-                        printf("\nCould NOT grant %d units of resource %d to task %d: only %d available\n",
+                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
                                activityN->taskNumber+1,
                                currentResources[activityN->resourceType]);
                         currentState[i] = WAITING;
                         waitingCount++;
-                        minRequest[i] = min(activityN->resourceAmount, minRequest[i]);
+                        minRequest[activityN->resourceType] = min(activityN->resourceAmount, minRequest[activityN->resourceType]);
                     }
                 } else {
                     perror("\nCannot perform REQUEST, previous state was not INITIATE.\n");
@@ -188,7 +188,7 @@ int main (int argc, const char * argv[]) {
                         nextResources[activityN->resourceType] = defaultResources[activityN->resourceType];
                     }
                     currentState[i] = RELEASE;
-                    printf("\nTask %d RELEASED %d units of resource %d.\n\tUnits available next cycle: %d\n",
+                    printf("\nTask %d RELEASED %d unit(s) of resource %d.\n\tUnits available next cycle: %d\n",
                            activityN->taskNumber+1,
                            activityN->resourceAmount,
                            activityN->resourceType+1,
