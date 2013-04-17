@@ -15,7 +15,12 @@
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 
-void copyResourceArray(int *from, int *to, int size);
+void copyArray(int *from, int *to, int size);
 
 // Aborts lowest-numbered deadlocked process, and releases claimed resources
 bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity, int *minRequest);
+
+// Allocates space for a two-dimensional array
+int **malloc2dIntArray(int x, int y);
+
+void copy2dArray(int **from, int **to, int x, int y);
