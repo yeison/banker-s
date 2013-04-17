@@ -134,7 +134,7 @@ int main (int argc, const char * argv[]) {
         activity *activityN = currentActivity[i];
 
         // If the activity has a delay, skip it until the delay is exhausted
-        if(activityN->type != INITIATE && activityN->delay > 0){
+        if(activityN->type != TERMINATE && activityN->type != INITIATE && activityN->delay > 0){
             activityN->delay--;
             printf("\nTask %d skipping delayed activity: %s\n\tRemaining delay: %d\n", activityN->taskNumber+1, getActivityType(activityN->type), activityN->delay);
             currentState[activityN->resourceType][i] = DELAYED;
@@ -153,8 +153,7 @@ int main (int argc, const char * argv[]) {
                 if(previousState[activityN->resourceType][i] >= INITIATE){
                     // If resource of this type is available and sufficient for request
                     if(initialResources[activityN->resourceType] >= activityN->resourceAmount
-                    && currentResources[activityN->resourceType] >= activityN->resourceAmount) {
-                        
+                    && currentResources[activityN->resourceType] >= activityN->resourceAmount) {                        
                         currentResources[activityN->resourceType] = currentResources[activityN->resourceType] - activityN->resourceAmount;
                         nextResources[activityN->resourceType] = currentResources[activityN->resourceType];
                         currentState[activityN->resourceType][i] = GRANTED;
