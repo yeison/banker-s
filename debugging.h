@@ -9,6 +9,8 @@
 #ifndef bankers_debugging_h
 #define bankers_debugging_h
 
+#include "activity.h"
+
 void printQueues(activity** taskTable, int numberOfTasks);
 
 

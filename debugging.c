@@ -7,8 +7,7 @@
 //
 
 #include <stdio.h>
-#include "activity.h"
-
+#include "debugging.h"
 
 // Pass in a task table and its size to print the contents
 void printQueues(activity** taskTable, int numberOfTasks){

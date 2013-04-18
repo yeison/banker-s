@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4B99644111EE9F5C002AA055 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B99643F11EE9F5C002AA055 /* main.c */; };
+		4BDEDD07171F7D67004D924B /* utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 4BDEDD06171F7D67004D924B /* utility.c */; };
+		4BDEDD09171F84AA004D924B /* dijkstras.c in Sources */ = {isa = PBXBuildFile; fileRef = 4BDEDD08171F84AA004D924B /* dijkstras.c */; };
 		4BF578431711E47F008405BE /* activity.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B99643B11EE9EFB002AA055 /* activity.c */; };
 		4BF5784617124C7C008405BE /* debugging.c in Sources */ = {isa = PBXBuildFile; fileRef = 4BF5784517124C7C008405BE /* debugging.c */; };
 		4BF578491712633B008405BE /* optimistic.c in Sources */ = {isa = PBXBuildFile; fileRef = 4BF578481712633B008405BE /* optimistic.c */; };
@@ -33,6 +35,9 @@
 		4B99643F11EE9F5C002AA055 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		4B99644011EE9F5C002AA055 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		4B99644311EE9F72002AA055 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		4BDEDD05171F7D4C004D924B /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
+		4BDEDD06171F7D67004D924B /* utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utility.c; sourceTree = "<group>"; };
+		4BDEDD08171F84AA004D924B /* dijkstras.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dijkstras.c; sourceTree = "<group>"; };
 		4BF5784417124BE5008405BE /* debugging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = debugging.h; sourceTree = "<group>"; };
 		4BF5784517124C7C008405BE /* debugging.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = debugging.c; sourceTree = "<group>"; };
 		4BF5784717126325008405BE /* optimistic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = optimistic.h; sourceTree = "<group>"; };
@@ -75,6 +80,9 @@
 				4BF5784717126325008405BE /* optimistic.h */,
 				4BF578481712633B008405BE /* optimistic.c */,
 				4BF5784A171263BB008405BE /* dijkstras.h */,
+				4BDEDD08171F84AA004D924B /* dijkstras.c */,
+				4BDEDD05171F7D4C004D924B /* utility.h */,
+				4BDEDD06171F7D67004D924B /* utility.c */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -147,6 +155,8 @@
 				4B99644111EE9F5C002AA055 /* main.c in Sources */,
 				4BF5784617124C7C008405BE /* debugging.c in Sources */,
 				4BF578491712633B008405BE /* optimistic.c in Sources */,
+				4BDEDD07171F7D67004D924B /* utility.c in Sources */,
+				4BDEDD09171F84AA004D924B /* dijkstras.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

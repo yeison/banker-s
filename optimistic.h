@@ -9,6 +9,6 @@
 #ifndef bankers_optimistic_h
 #define bankers_optimistic_h
 
-
+#include "utility.h"
 
 #endif

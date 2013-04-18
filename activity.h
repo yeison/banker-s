@@ -8,6 +8,9 @@
  */
 
 /* An activity is a struct, which contains all of the information from one typical "line" of input.  It also contains a next pointer, so that activity nodes may be arranged in a linked list.  The linked list will be used as a queue.  This way we can maintain task activities in the appropriate order.*/
+#ifndef bankers_activity_h
+#define bankers_activity_h
+
 
 typedef struct activity activity;
 
@@ -30,6 +33,7 @@ int getActivityTypeValue(char *type);
 // Retrieve string-value for the activity type
 char* getActivityType(int activityTypeValue);
 
+
 #define NOT_INITIATED 0
 #define TERMINATE 1
 #define INITIATE 2
@@ -39,3 +43,5 @@ char* getActivityType(int activityTypeValue);
 #define WAITING 7
 #define DELAYED 8
 #define MAX_STRING_LENGTH 10
+
+#endif

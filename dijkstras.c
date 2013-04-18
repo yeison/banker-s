@@ -1,15 +1,14 @@
 //
-//  optimistic.c
+//  dijkstras.c
 //  bankers
 //
-//  Created by Yeison Rodriguez on 4/7/13.
+//  Created by Yeison Rodriguez on 4/17/13.
 //
 //
 
-#include <stdio.h>
-#include "optimistic.h"
+#include "dijkstras.h"
 
-void runOptimistic(){
+void runBankers(){
     
 	/*****************************************************************************/
 	/*Begin Implementation*/
@@ -205,6 +204,6 @@ void runOptimistic(){
         
     }
     
-	printf("\nOptimistic DONE");
+	printf("\nBanker's DONE");
     
 }
