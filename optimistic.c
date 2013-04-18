@@ -205,6 +205,6 @@ void runOptimistic(){
         
     }
     
-	printf("\nOptimistic DONE");
+	printf("\nOptimistic DONE\n\n");
     
 }

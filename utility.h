@@ -17,7 +17,11 @@
 
 void copyArray(int *from, int *to, int size);
 
-// Aborts lowest-numbered deadlocked process, and releases claimed resources
+// Abort the given task, and release its resources
+void abortTask(int taskNumber, int **resourceLockTable, int numberOfResourceTypes, int *currentResources, activity **currentActivity);
+
+
+// Aborts lowest-numbered deadlocked process, and releases resources
 bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity, int *minRequest);
 
 // Allocates space for a two-dimensional array

@@ -22,6 +22,9 @@ void runBankers(){
      has been granted. */
     int **resourceLockTable = malloc2dIntArray(numberOfResourceTypes, numberOfTasks);
     
+    // Keeps track of how many resources each task claims it will use
+    int **resourceClaimTable = malloc2dIntArray(numberOfResourceTypes, numberOfTasks);
+    
     // The state array keeps track of the task's previous state
     int **previousState = malloc2dIntArray(numberOfResourceTypes, numberOfTasks);
     // The state array keeps track of the task's state
@@ -136,11 +139,24 @@ void runBankers(){
                 // If state is 0 (not initiated) then initiate
                 if (!previousState[activityN->resourceType][i]) {
                     currentState[activityN->resourceType][i] = INITIATE;
+                    // Retrieve and store the claim amount
+                    resourceClaimTable[activityN->resourceType][activityN->taskNumber] = activityN->resourceAmount;
                 }
                 break;
                 
             case REQUEST:
                 if(previousState[activityN->resourceType][i] >= INITIATE){
+                    // If request exceeds initial claims, then abort the task
+                    if(activityN->resourceAmount > resourceClaimTable[activityN->resourceType][activityN->taskNumber]){
+                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: EXCEEDS initial claim of %d\n",
+                               activityN->resourceAmount,
+                               activityN->resourceType+1,
+                               activityN->taskNumber+1,
+                               resourceClaimTable[activityN->resourceType][activityN->taskNumber]);
+                        abortTask(activityN->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
+                        break;
+                    }
+                    
                     // If resource of this type is available and sufficient for request
                     if(initialResources[activityN->resourceType] >= activityN->resourceAmount
                        && currentResources[activityN->resourceType] >= activityN->resourceAmount) {
@@ -204,6 +220,6 @@ void runBankers(){
         
     }
     
-	printf("\nBanker's DONE");
+	printf("\nBanker's DONE\n\n");
     
 }

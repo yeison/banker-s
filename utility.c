@@ -7,6 +7,26 @@
 //
 #include "utility.h"
 
+void abortTask(int taskNumber, int **resourceLockTable, int numberOfResourceTypes, int *currentResources, activity **currentActivity){
+    printf("\nAborting task %d\n", taskNumber+1);
+    
+    for (int j = 0; j < numberOfResourceTypes; j++) {
+        
+        currentActivity[taskNumber]->type = TERMINATE;
+                
+        int resourceAmount = resourceLockTable[j][taskNumber];
+        
+        currentResources[j] += resourceAmount;
+        printf("\tTask %d forced to release %d unit(s) of resource %d: %d units available next cycle\n",
+               taskNumber+1,
+               resourceAmount,
+               j+1,
+               currentResources[j]);
+        
+        resourceLockTable[j][taskNumber] = 0;
+                
+    }
+}
 
 bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity, int *minRequest){
     
@@ -17,14 +37,18 @@ bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfRes
         for (int j = 0; j < numberOfResourceTypes; j++) {
             if(resourceLockTable[j][i]){
                 
-                printf("\nAborting task %d\n", i+1);
+                printf("\nAborting deadlocked task %d\n", i+1);
                 currentActivity[i]->type = TERMINATE;
                 
                 while (j < numberOfResourceTypes) {
                     int resourceAmount = resourceLockTable[j][i];
                     
                     currentResources[j] += resourceAmount;
-                    printf("\tTask %d forced to release %d unit(s) of resource %d: %d units available next cycle\n", i+1, resourceAmount, j+1, currentResources[j]);
+                    printf("\tTask %d forced to release %d unit(s) of resource %d: %d units available next cycle\n",
+                           i+1,
+                           resourceAmount,
+                           j+1,
+                           currentResources[j]);
                     
                     if (currentResources[j] >= minRequest[j]) {
                         success = true;

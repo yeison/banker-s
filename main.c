@@ -19,6 +19,8 @@ int main (int argc, const char * argv[]) {
 	}
     
     // runOptimistic();
+    
+    stdin = fopen(argv[1], "r");
 	runBankers();
 
 }
