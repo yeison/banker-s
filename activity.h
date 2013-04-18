@@ -42,6 +42,7 @@ char* getActivityType(int activityTypeValue);
 #define GRANTED 6
 #define WAITING 7
 #define DELAYED 8
+#define DENIED 9
 #define MAX_STRING_LENGTH 10
 
 #endif

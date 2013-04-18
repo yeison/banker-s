@@ -148,12 +148,27 @@ void runBankers(){
                 if(previousState[activityN->resourceType][i] >= INITIATE){
                     // If request exceeds initial claims, then abort the task
                     if(activityN->resourceAmount > resourceClaimTable[activityN->resourceType][activityN->taskNumber]){
-                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: EXCEEDS initial claim of %d\n",
+                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tEXCEEDS initial claim of %d\n",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
                                activityN->taskNumber+1,
                                resourceClaimTable[activityN->resourceType][activityN->taskNumber]);
                         abortTask(activityN->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
+                        currentState[activityN->resourceType][i] = TERMINATE;
+                        break;
+                    }
+                    
+                    // If initial claim exceeds available resources and resources have not already been allocated, deny request
+                    if(resourceClaimTable[activityN->resourceType][activityN->taskNumber] > currentResources[activityN->resourceType]
+                       && resourceLockTable[activityN->resourceType][activityN->taskNumber] == 0){
+                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tIntial claim of %d EXCEEDS available unit(s) %d\n",
+                               activityN->resourceAmount,
+                               activityN->resourceType+1,
+                               activityN->taskNumber+1,
+                               resourceClaimTable[activityN->resourceType][activityN->taskNumber],
+                               currentResources[activityN->resourceType]);
+                               currentState[activityN->resourceType][i] = DENIED;
+
                         break;
                     }
                     
@@ -214,7 +229,9 @@ void runBankers(){
         }
         
         // On success move the pointer forward to the next activity in the linked list
-        if (activityN->type != TERMINATE  && currentState[activityN->resourceType][i] != WAITING) {
+        if (activityN->type != TERMINATE
+        && currentState[activityN->resourceType][i] != WAITING
+        && currentState[activityN->resourceType][i] != DENIED) {
             currentActivity[i] = currentActivity[i]->next;
         }
         
