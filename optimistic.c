@@ -146,13 +146,19 @@ void runOptimistic(){
                     if(initialResources[activityN->resourceType] >= activityN->resourceAmount
                        && currentResources[activityN->resourceType] >= activityN->resourceAmount) {
                         currentResources[activityN->resourceType] = currentResources[activityN->resourceType] - activityN->resourceAmount;
-                        nextResources[activityN->resourceType] = currentResources[activityN->resourceType];
+                        
+                        nextResources[activityN->resourceType] -= activityN->resourceAmount;
+                        if(nextResources[activityN->resourceType] < 0){
+                            nextResources[activityN->resourceType] = 0;
+                        }
+                        
                         currentState[activityN->resourceType][i] = GRANTED;
-                        printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n",
+                        printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n\tAvailable next cyle: %d\n",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
                                activityN->taskNumber+1,
-                               currentResources[activityN->resourceType]);
+                               currentResources[activityN->resourceType],
+                               nextResources[activityN->resourceType]);
                         resourceLockTable[activityN->resourceType][activityN->taskNumber] = activityN->resourceAmount;
                     } else {
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",

@@ -136,6 +136,18 @@ void runBankers(){
         
         switch (activityN->type) {
             case INITIATE:
+                // If claim exceeds total resource, then abort the task
+                if(activityN->resourceAmount > defaultResources[activityN->resourceType]){
+                    
+                    printf("\nCould NOT claim %d unit(s) of resource %d for task %d: \n\tClaim EXCEEDS total available resources: %d\n",
+                           activityN->resourceAmount,
+                           activityN->resourceType+1,
+                           activityN->taskNumber+1,
+                           defaultResources[activityN->resourceType]);
+                    abortTask(activityN->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
+                    currentState[activityN->resourceType][i] = TERMINATE;
+                    break;
+                }
                 // If state is 0 (not initiated) then initiate
                 if (!previousState[activityN->resourceType][i]) {
                     currentState[activityN->resourceType][i] = INITIATE;
@@ -146,8 +158,10 @@ void runBankers(){
                 
             case REQUEST:
                 if(previousState[activityN->resourceType][i] >= INITIATE){
+ 
                     // If request exceeds initial claims, then abort the task
                     if(activityN->resourceAmount > resourceClaimTable[activityN->resourceType][activityN->taskNumber]){
+                    
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tEXCEEDS initial claim of %d\n",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
@@ -175,14 +189,21 @@ void runBankers(){
                     // If resource of this type is available and sufficient for request
                     if(initialResources[activityN->resourceType] >= activityN->resourceAmount
                        && currentResources[activityN->resourceType] >= activityN->resourceAmount) {
+                        
                         currentResources[activityN->resourceType] = currentResources[activityN->resourceType] - activityN->resourceAmount;
-                        nextResources[activityN->resourceType] = currentResources[activityN->resourceType];
+
+                        nextResources[activityN->resourceType] -= activityN->resourceAmount;
+                        if(nextResources[activityN->resourceType] < 0){
+                            nextResources[activityN->resourceType] = 0;
+                        }
+                        
                         currentState[activityN->resourceType][i] = GRANTED;
-                        printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n",
+                        printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n\tAvailable next cycle: %d\t\n    ",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
                                activityN->taskNumber+1,
-                               currentResources[activityN->resourceType]);
+                               currentResources[activityN->resourceType],
+                               nextResources[activityN->resourceType]);
                         resourceLockTable[activityN->resourceType][activityN->taskNumber] = activityN->resourceAmount;
                     } else {
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",
