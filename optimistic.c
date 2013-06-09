@@ -27,7 +27,10 @@ void runOptimistic(){
     int **previousState = malloc2dIntArray(numberOfResourceTypes, numberOfTasks);
     // The state array keeps track of the task's state
     int **currentState = malloc2dIntArray(numberOfResourceTypes, numberOfTasks);
-    
+
+    // Tables to store output data
+    int *taskTimeTable = malloc(numberOfTasks*sizeof(int));
+    int *taskWaitingTable = malloc(numberOfTasks*sizeof(int));
     
 	// Create resource arrays that track the amount of resource available of each type.
   	int *defaultResources = malloc(numberOfResourceTypes*sizeof(int));
@@ -103,7 +106,7 @@ void runOptimistic(){
             
             // If all tasks are waiting, we have a deadlock
             if (waitingCount >= numberOfTasks-termCount) {
-                resolveDeadlock(resourceLockTable, numberOfTasks, numberOfResourceTypes, currentResources, currentActivity, minRequest);
+                resolveDeadlock(resourceLockTable, numberOfTasks, numberOfResourceTypes, currentResources, currentActivity, minRequest, taskTimeTable);
             }
             
             termCount = 0;
@@ -167,6 +170,7 @@ void runOptimistic(){
                                activityN->taskNumber+1,
                                currentResources[activityN->resourceType]);
                         currentState[activityN->resourceType][i] = WAITING;
+                        taskWaitingTable[activityN->taskNumber] += 1;
                         waitingCount++;
                         minRequest[activityN->resourceType] = min(activityN->resourceAmount, minRequest[activityN->resourceType]);
                     }
@@ -197,6 +201,11 @@ void runOptimistic(){
                 break;
                 
             case TERMINATE:
+
+                if(taskTimeTable[i] == 0){
+                    taskTimeTable[i] = cycle/numberOfTasks;
+                }
+                
                 termCount++;
                 break;
                 
@@ -212,5 +221,7 @@ void runOptimistic(){
     }
     
 	printf("\nOptimistic DONE\n\n");
+    
+    printOutput(taskTimeTable, taskWaitingTable, numberOfTasks);
     
 }

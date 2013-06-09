@@ -73,11 +73,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/04.txt"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/05.txt"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/06.txt"
@@ -97,11 +97,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/10.txt"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/11.txt"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "input/12.txt"

@@ -18,6 +18,11 @@ void runBankers(){
 	
 	scanf("%d", &numberOfTasks);
 	scanf("%d", &numberOfResourceTypes);
+
+    // Tables to store output data
+    int *taskTimeTable = malloc(numberOfTasks*sizeof(int));
+    int *taskWaitingTable = malloc(numberOfTasks*sizeof(int));
+
 	/* The resourceLockTable keeps track of how much of each resource a particular task
      has been granted. */
     int **resourceLockTable = malloc2dIntArray(numberOfResourceTypes, numberOfTasks);
@@ -44,8 +49,9 @@ void runBankers(){
 	}
     
 	/*** Test the first line of input ***/
-	printf(" Number of Tasks: %d\n", numberOfTasks);
-	printf(" Number of Resource Types: %d\n", numberOfResourceTypes);
+  	printf("================= BANKER'S ==================\n\n");
+	printf("Number of Tasks: %d\n", numberOfTasks);
+	printf("Number of Resource Types: %d\n", numberOfResourceTypes);
 	for (int i = 0; i < numberOfResourceTypes; i++) {
 		printf(" Units of resource-type %d: %d\n", i+1, currentResources[i]);
 	}
@@ -105,7 +111,7 @@ void runBankers(){
             
             // If all tasks are waiting, we have a deadlock
             if (waitingCount >= numberOfTasks-termCount) {
-                resolveDeadlock(resourceLockTable, numberOfTasks, numberOfResourceTypes, currentResources, currentActivity, minRequest);
+                resolveDeadlock(resourceLockTable, numberOfTasks, numberOfResourceTypes, currentResources, currentActivity, minRequest, taskTimeTable);
             }
             
             termCount = 0;
@@ -174,15 +180,17 @@ void runBankers(){
                     
                     // If initial claim exceeds available resources and resources have not already been allocated, deny request
                     if(resourceClaimTable[activityN->resourceType][activityN->taskNumber] > currentResources[activityN->resourceType]
-                       && resourceLockTable[activityN->resourceType][activityN->taskNumber] == 0){
+                    && resourceLockTable[activityN->resourceType][activityN->taskNumber] == 0){
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tIntial claim of %d EXCEEDS available unit(s) %d\n",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
                                activityN->taskNumber+1,
                                resourceClaimTable[activityN->resourceType][activityN->taskNumber],
                                currentResources[activityN->resourceType]);
-                               currentState[activityN->resourceType][i] = DENIED;
-
+                        
+                        currentState[activityN->resourceType][i] = DENIED;
+                        // Increase the amount of time this task has been waiting
+                        taskWaitingTable[activityN->taskNumber] += 1;
                         break;
                     }
                     
@@ -242,6 +250,10 @@ void runBankers(){
                 break;
                 
             case TERMINATE:
+                // Set termination time
+                if(taskTimeTable[i] == 0){
+                    taskTimeTable[i] = cycle/numberOfTasks;
+                }
                 termCount++;
                 break;
                 
@@ -259,5 +271,7 @@ void runBankers(){
     }
     
 	printf("\nBanker's DONE\n\n");
+    
+    printOutput(taskTimeTable, taskWaitingTable, numberOfTasks);
     
 }

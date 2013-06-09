@@ -28,7 +28,7 @@ void abortTask(int taskNumber, int **resourceLockTable, int numberOfResourceType
     }
 }
 
-bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity, int *minRequest){
+bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfResourceTypes, int *currentResources, activity **currentActivity, int *minRequest, int *taskTimeTable){
     
     printf("\nResolving Deadlock\n");
     bool success = false;
@@ -39,6 +39,7 @@ bool resolveDeadlock(int **resourceLockTable, int numberOfTasks, int numberOfRes
                 
                 printf("\nAborting deadlocked task %d\n", i+1);
                 currentActivity[i]->type = TERMINATE;
+                taskTimeTable[i] = -1;
                 
                 while (j < numberOfResourceTypes) {
                     int resourceAmount = resourceLockTable[j][i];
@@ -91,4 +92,33 @@ void copy2dArray(int **from, int **to, int x, int y){
     for (int i=0; i < x; i++) {
         copyArray(from[i], to[i], y);
     }
+}
+
+void printOutput(int *taskTimeTable, int *taskWaitingTable, int numberOfTasks){
+    
+    int totalTime = 0;
+    int totalTimeWaiting = 0;
+
+    printf("Output:\n");
+    printf("\t\tTime \tWaiting \tWaiting \n");
+    for (int i=0; i < numberOfTasks; i++) {
+        int time = taskTimeTable[i];
+        
+        if(time == -1){
+            printf("Task %d: \taborted \n", i+1);
+            continue;
+        }
+        
+        int tWaiting = taskWaitingTable[i];
+        
+        totalTime += time;
+        totalTimeWaiting += tWaiting;
+        
+        double percentWaiting = (1.0*tWaiting)/time;
+        
+        printf("Task %d: %4d %10d %11.2f \n", i+1, time, tWaiting, percentWaiting);
+    }
+    
+    printf("Total: %5d %10d %11.2f \n\n\n", totalTime, totalTimeWaiting, (1.0*totalTimeWaiting)/totalTime);
+    
 }
