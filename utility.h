@@ -14,6 +14,7 @@
 #include <stdbool.h>
 #include "limits.h"
 #include "activity.h"
+#include "queue.h"
 
 void copyArray(int *from, int *to, int size);
 

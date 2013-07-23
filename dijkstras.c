@@ -8,6 +8,27 @@
 
 #include "dijkstras.h"
 
+activity* getNextActivity(activity** activityArray, queue* requestQueue){
+    return activityArray[pop_front(requestQueue)];
+}
+
+void mergeQueues(queue** requestQueue, queue** nextRequestQueue, queue** helperRequestStack){
+    
+    if ((*requestQueue)->head != NULL) {
+        printf("SOMETHING WENT WRONG");
+        exit(EXIT_FAILURE);
+    }
+    
+    while ((*helperRequestStack)->head != NULL) {
+        push(pop_back(*helperRequestStack), *nextRequestQueue);
+    }
+    
+    *requestQueue = *nextRequestQueue;
+    *nextRequestQueue = malloc(sizeof(queue));
+    
+    
+}
+
 void runBankers(){
     
 	/*****************************************************************************/
@@ -18,11 +39,11 @@ void runBankers(){
 	
 	scanf("%d", &numberOfTasks);
 	scanf("%d", &numberOfResourceTypes);
-
+    
     // Tables to store output data
     int *taskTimeTable = malloc(numberOfTasks*sizeof(int));
     int *taskWaitingTable = malloc(numberOfTasks*sizeof(int));
-
+    
 	/* The resourceLockTable keeps track of how much of each resource a particular task
      has been granted. */
     int **resourceLockTable = malloc2dIntArray(numberOfResourceTypes, numberOfTasks);
@@ -67,6 +88,18 @@ void runBankers(){
 	makeActivityQueues(taskTable, taskTableTails);
     printQueues(taskTable, numberOfTasks);
     
+    /* Request-queue keeps track of pending-request order. */
+    queue *requestQueue = malloc(sizeof(queue));
+    for (int j=0; j < numberOfTasks; j++) {
+        // Initialize with regular order: 0, 1, 2, 3, ...
+        push(j, requestQueue);
+    }
+    queue *nextRequestQueue = malloc(sizeof(queue));
+    queue *helperRequestStack = malloc(sizeof(queue));
+    nextRequestQueue->head = NULL, nextRequestQueue->tail = NULL;
+    helperRequestStack->head = NULL, helperRequestStack->tail = NULL;
+
+    
     /*****************************************************************************/
     /* The meaty resource manager implementation */
     
@@ -96,6 +129,7 @@ void runBankers(){
         
         // Check if next cycle is a new cycle; then update table pointers and reset counters
         if (i%numberOfTasks == 0 && cycle != 0) {
+            mergeQueues(&requestQueue, &nextRequestQueue, &helperRequestStack);
             
             int **tempStatePtr = previousState;
             previousState = currentState;
@@ -130,123 +164,135 @@ void runBankers(){
             continue;
         }
         
-        activity *activityN = currentActivity[i];
+        activity *activityNode = getNextActivity(currentActivity, requestQueue);
         
         // If the activity has a delay, skip it until the delay is exhausted
-        if(activityN->type != TERMINATE && activityN->type != INITIATE && activityN->delay > 0){
-            activityN->delay--;
-            printf("\nTask %d skipping delayed activity: %s\n\tRemaining delay: %d\n", activityN->taskNumber+1, getActivityType(activityN->type), activityN->delay);
-            currentState[activityN->resourceType][i] = DELAYED;
+        if(activityNode->type != TERMINATE && activityNode->type != INITIATE && activityNode->delay > 0){
+            activityNode->delay--;
+            printf("\nTask %d skipping delayed activity: %s\n\tRemaining delay: %d\n",
+                   activityNode->taskNumber+1,
+                   getActivityType(activityNode->type),
+                   activityNode->delay);
+            
+            currentState[activityNode->resourceType][i] = DELAYED;
+            push(i, nextRequestQueue);
+
             continue;
         }
         
-        switch (activityN->type) {
+        switch (activityNode->type) {
             case INITIATE:
                 // If claim exceeds total resource, then abort the task
-                if(activityN->resourceAmount > defaultResources[activityN->resourceType]){
+                if(activityNode->resourceAmount > defaultResources[activityNode->resourceType]){
                     
                     printf("\nCould NOT claim %d unit(s) of resource %d for task %d: \n\tClaim EXCEEDS total available resources: %d\n",
-                           activityN->resourceAmount,
-                           activityN->resourceType+1,
-                           activityN->taskNumber+1,
-                           defaultResources[activityN->resourceType]);
-                    abortTask(activityN->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
-                    currentState[activityN->resourceType][i] = TERMINATE;
+                           activityNode->resourceAmount,
+                           activityNode->resourceType+1,
+                           activityNode->taskNumber+1,
+                           defaultResources[activityNode->resourceType]);
+                    abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
+                    currentState[activityNode->resourceType][i] = TERMINATE;
                     break;
                 }
                 // If state is 0 (not initiated) then initiate
-                if (!previousState[activityN->resourceType][i]) {
-                    currentState[activityN->resourceType][i] = INITIATE;
+                if (!previousState[activityNode->resourceType][i]) {
+                    currentState[activityNode->resourceType][i] = INITIATE;
                     // Retrieve and store the claim amount
-                    resourceClaimTable[activityN->resourceType][activityN->taskNumber] = activityN->resourceAmount;
+                    resourceClaimTable[activityNode->resourceType][activityNode->taskNumber] = activityNode->resourceAmount;
                 }
+                push(i, nextRequestQueue);
                 break;
                 
             case REQUEST:
-                if(previousState[activityN->resourceType][i] >= INITIATE){
- 
-                    // If request exceeds initial claims, then abort the task
-                    if(activityN->resourceAmount > resourceClaimTable[activityN->resourceType][activityN->taskNumber]){
+                if(previousState[activityNode->resourceType][i] >= INITIATE){
                     
+                    // If request exceeds initial claims, then abort the task
+                    if(activityNode->resourceAmount > resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]){
+                        
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tEXCEEDS initial claim of %d\n",
-                               activityN->resourceAmount,
-                               activityN->resourceType+1,
-                               activityN->taskNumber+1,
-                               resourceClaimTable[activityN->resourceType][activityN->taskNumber]);
-                        abortTask(activityN->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
-                        currentState[activityN->resourceType][i] = TERMINATE;
+                               activityNode->resourceAmount,
+                               activityNode->resourceType+1,
+                               activityNode->taskNumber+1,
+                               resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]);
+                        abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
+                        currentState[activityNode->resourceType][i] = TERMINATE;
                         break;
                     }
                     
                     // If initial claim exceeds available resources and resources have not already been allocated, deny request
-                    if(resourceClaimTable[activityN->resourceType][activityN->taskNumber] > currentResources[activityN->resourceType]
-                    && resourceLockTable[activityN->resourceType][activityN->taskNumber] == 0){
+                    if(resourceClaimTable[activityNode->resourceType][activityNode->taskNumber] > currentResources[activityNode->resourceType]
+                       && resourceLockTable[activityNode->resourceType][activityNode->taskNumber] == 0){
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tIntial claim of %d EXCEEDS available unit(s) %d\n",
-                               activityN->resourceAmount,
-                               activityN->resourceType+1,
-                               activityN->taskNumber+1,
-                               resourceClaimTable[activityN->resourceType][activityN->taskNumber],
-                               currentResources[activityN->resourceType]);
+                               activityNode->resourceAmount,
+                               activityNode->resourceType+1,
+                               activityNode->taskNumber+1,
+                               resourceClaimTable[activityNode->resourceType][activityNode->taskNumber],
+                               currentResources[activityNode->resourceType]);
                         
-                        currentState[activityN->resourceType][i] = DENIED;
+                        currentState[activityNode->resourceType][i] = DENIED;
                         // Increase the amount of time this task has been waiting
-                        taskWaitingTable[activityN->taskNumber] += 1;
+                        taskWaitingTable[activityNode->taskNumber] += 1;
+                        push(i, helperRequestStack);
                         break;
                     }
                     
                     // If resource of this type is available and sufficient for request
-                    if(initialResources[activityN->resourceType] >= activityN->resourceAmount
-                       && currentResources[activityN->resourceType] >= activityN->resourceAmount) {
+                    if(initialResources[activityNode->resourceType] >= activityNode->resourceAmount
+                       && currentResources[activityNode->resourceType] >= activityNode->resourceAmount) {
                         
-                        currentResources[activityN->resourceType] = currentResources[activityN->resourceType] - activityN->resourceAmount;
-
-                        nextResources[activityN->resourceType] -= activityN->resourceAmount;
-                        if(nextResources[activityN->resourceType] < 0){
-                            nextResources[activityN->resourceType] = 0;
+                        currentResources[activityNode->resourceType] =
+                            currentResources[activityNode->resourceType] - activityNode->resourceAmount;
+                        
+                        nextResources[activityNode->resourceType] -= activityNode->resourceAmount;
+                        if(nextResources[activityNode->resourceType] < 0){
+                            nextResources[activityNode->resourceType] = 0;
                         }
                         
-                        currentState[activityN->resourceType][i] = GRANTED;
+                        currentState[activityNode->resourceType][i] = GRANTED;
                         printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n\tAvailable next cycle: %d\t\n    ",
-                               activityN->resourceAmount,
-                               activityN->resourceType+1,
-                               activityN->taskNumber+1,
-                               currentResources[activityN->resourceType],
-                               nextResources[activityN->resourceType]);
-                        resourceLockTable[activityN->resourceType][activityN->taskNumber] = activityN->resourceAmount;
+                               activityNode->resourceAmount,
+                               activityNode->resourceType+1,
+                               activityNode->taskNumber+1,
+                               currentResources[activityNode->resourceType],
+                               nextResources[activityNode->resourceType]);
+                        resourceLockTable[activityNode->resourceType][activityNode->taskNumber] = activityNode->resourceAmount;
                     } else {
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",
-                               activityN->resourceAmount,
-                               activityN->resourceType+1,
-                               activityN->taskNumber+1,
-                               currentResources[activityN->resourceType]);
-                        currentState[activityN->resourceType][i] = WAITING;
+                               activityNode->resourceAmount,
+                               activityNode->resourceType+1,
+                               activityNode->taskNumber+1,
+                               currentResources[activityNode->resourceType]);
+                        currentState[activityNode->resourceType][i] = WAITING;
                         waitingCount++;
-                        minRequest[activityN->resourceType] = min(activityN->resourceAmount, minRequest[activityN->resourceType]);
+                        minRequest[activityNode->resourceType] = min(activityNode->resourceAmount, minRequest[activityNode->resourceType]);
+                        push(i, helperRequestStack);
                     }
                 } else {
                     perror("\nCannot perform REQUEST, previous state was not INITIATE.\n");
                     exit(2);
                 }
+                push(i, nextRequestQueue);
                 break;
                 
             case RELEASE:
-                if (previousState[activityN->resourceType][i] > INITIATE) {
-                    nextResources[activityN->resourceType] = nextResources[activityN->resourceType] + activityN->resourceAmount;
-                    if(nextResources[activityN->resourceType] > defaultResources[activityN->resourceType]){
-                        nextResources[activityN->resourceType] = defaultResources[activityN->resourceType];
+                if (previousState[activityNode->resourceType][i] > INITIATE) {
+                    nextResources[activityNode->resourceType] = nextResources[activityNode->resourceType] + activityNode->resourceAmount;
+                    if(nextResources[activityNode->resourceType] > defaultResources[activityNode->resourceType]){
+                        nextResources[activityNode->resourceType] = defaultResources[activityNode->resourceType];
                     }
-                    currentState[activityN->resourceType][i] = RELEASE;
+                    currentState[activityNode->resourceType][i] = RELEASE;
                     printf("\nTask %d RELEASED %d unit(s) of resource %d.\n\tUnits available next cycle: %d\n",
-                           activityN->taskNumber+1,
-                           activityN->resourceAmount,
-                           activityN->resourceType+1,
-                           nextResources[activityN->resourceType]);
-                    resourceLockTable[activityN->resourceType][activityN->taskNumber] = activityN->resourceAmount;
+                           activityNode->taskNumber+1,
+                           activityNode->resourceAmount,
+                           activityNode->resourceType+1,
+                           nextResources[activityNode->resourceType]);
+                    resourceLockTable[activityNode->resourceType][activityNode->taskNumber] = activityNode->resourceAmount;
                 } else {
                     perror("\nCannot perform RELEASE, previous state was not REQUEST or RELEASE.\n");
                     exit(3);
                 }
                 
+                push(i, nextRequestQueue);
                 break;
                 
             case TERMINATE:
@@ -255,6 +301,7 @@ void runBankers(){
                     taskTimeTable[i] = cycle/numberOfTasks;
                 }
                 termCount++;
+                push(i, nextRequestQueue);
                 break;
                 
             default:
@@ -262,9 +309,9 @@ void runBankers(){
         }
         
         // On success move the pointer forward to the next activity in the linked list
-        if (activityN->type != TERMINATE
-        && currentState[activityN->resourceType][i] != WAITING
-        && currentState[activityN->resourceType][i] != DENIED) {
+        if (activityNode->type != TERMINATE
+            && currentState[activityNode->resourceType][i] != WAITING
+            && currentState[activityNode->resourceType][i] != DENIED) {
             currentActivity[i] = currentActivity[i]->next;
         }
         
