@@ -1,9 +1,7 @@
-//
 //  dijkstras.c
 //  bankers
 //
 //  Created by Yeison Rodriguez on 4/17/13.
-//
 //
 
 #include "dijkstras.h"
@@ -13,20 +11,19 @@ activity* getNextActivity(activity** activityArray, queue* requestQueue){
 }
 
 void mergeQueues(queue** requestQueue, queue** nextRequestQueue, queue** helperRequestStack){
-    
+
     if ((*requestQueue)->head != NULL) {
         printf("SOMETHING WENT WRONG");
         exit(EXIT_FAILURE);
     }
-    
+
     while ((*helperRequestStack)->head != NULL) {
-        push(pop_back(*helperRequestStack), *nextRequestQueue);
+        int stackTop = pop_back(*helperRequestStack);
+        push(stackTop, *nextRequestQueue);
     }
     
     *requestQueue = *nextRequestQueue;
     *nextRequestQueue = malloc(sizeof(queue));
-    
-    
 }
 
 void runBankers(){
@@ -88,7 +85,7 @@ void runBankers(){
 	makeActivityQueues(taskTable, taskTableTails);
     printQueues(taskTable, numberOfTasks);
     
-    /* Request-queue keeps track of pending-request order. */
+    /* Request-queues keep track of pending-request order. */
     queue *requestQueue = malloc(sizeof(queue));
     for (int j=0; j < numberOfTasks; j++) {
         // Initialize with regular order: 0, 1, 2, 3, ...
@@ -104,10 +101,10 @@ void runBankers(){
     /* The meaty resource manager implementation */
     
     // Perform some initialization tasks
-    activity **currentActivity = malloc((numberOfTasks+1)*sizeof(activity *));
+    activity **activityArray = malloc((numberOfTasks+1)*sizeof(activity *));
     for (int i=0; i < numberOfTasks; i++) {
         // Copy task-queue head pointers
-        currentActivity[i] = taskTable[i];
+        activityArray[i] = taskTable[i];
     }
     
     // Optimistic manager: process activities in each task queue
@@ -145,7 +142,7 @@ void runBankers(){
             
             // If all tasks are waiting, we have a deadlock
             if (waitingCount >= numberOfTasks-termCount) {
-                resolveDeadlock(resourceLockTable, numberOfTasks, numberOfResourceTypes, currentResources, currentActivity, minRequest, taskTimeTable);
+                resolveDeadlock(resourceLockTable, numberOfTasks, numberOfResourceTypes, currentResources, activityArray, minRequest, taskTimeTable);
             }
             
             termCount = 0;
@@ -156,7 +153,7 @@ void runBankers(){
         }
         
         // If there are no more activities for this task, continue to next task
-        if(currentActivity[i] == NULL){
+        if(activityArray[i] == NULL){
             // Break if we have NULLs equal to numberOfTasks
             if(numberOfTasks == ++termCount){
                 break;
@@ -164,7 +161,7 @@ void runBankers(){
             continue;
         }
         
-        activity *activityNode = getNextActivity(currentActivity, requestQueue);
+        activity *activityNode = getNextActivity(activityArray, requestQueue);
         
         // If the activity has a delay, skip it until the delay is exhausted
         if(activityNode->type != TERMINATE && activityNode->type != INITIATE && activityNode->delay > 0){
@@ -174,7 +171,7 @@ void runBankers(){
                    getActivityType(activityNode->type),
                    activityNode->delay);
             
-            currentState[activityNode->resourceType][i] = DELAYED;
+            currentState[activityNode->resourceType][activityNode->taskNumber] = DELAYED;
             push(i, nextRequestQueue);
 
             continue;
@@ -190,21 +187,21 @@ void runBankers(){
                            activityNode->resourceType+1,
                            activityNode->taskNumber+1,
                            defaultResources[activityNode->resourceType]);
-                    abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
-                    currentState[activityNode->resourceType][i] = TERMINATE;
+                    abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, activityArray);
+                    currentState[activityNode->resourceType][activityNode->taskNumber] = TERMINATE;
                     break;
                 }
                 // If state is 0 (not initiated) then initiate
                 if (!previousState[activityNode->resourceType][i]) {
-                    currentState[activityNode->resourceType][i] = INITIATE;
+                    currentState[activityNode->resourceType][activityNode->taskNumber] = INITIATE;
                     // Retrieve and store the claim amount
                     resourceClaimTable[activityNode->resourceType][activityNode->taskNumber] = activityNode->resourceAmount;
                 }
-                push(i, nextRequestQueue);
+                push(activityNode->taskNumber, nextRequestQueue);
                 break;
                 
             case REQUEST:
-                if(previousState[activityNode->resourceType][i] >= INITIATE){
+                if(previousState[activityNode->resourceType][activityNode->taskNumber] >= INITIATE){
                     
                     // If request exceeds initial claims, then abort the task
                     if(activityNode->resourceAmount > resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]){
@@ -214,8 +211,8 @@ void runBankers(){
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1,
                                resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]);
-                        abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, currentActivity);
-                        currentState[activityNode->resourceType][i] = TERMINATE;
+                        abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, activityArray);
+                        currentState[activityNode->resourceType][activityNode->taskNumber] = TERMINATE;
                         break;
                     }
                     
@@ -229,10 +226,10 @@ void runBankers(){
                                resourceClaimTable[activityNode->resourceType][activityNode->taskNumber],
                                currentResources[activityNode->resourceType]);
                         
-                        currentState[activityNode->resourceType][i] = DENIED;
+                        currentState[activityNode->resourceType][activityNode->taskNumber] = DENIED;
                         // Increase the amount of time this task has been waiting
                         taskWaitingTable[activityNode->taskNumber] += 1;
-                        push(i, helperRequestStack);
+                        push(activityNode->taskNumber, helperRequestStack);
                         break;
                     }
                     
@@ -248,7 +245,7 @@ void runBankers(){
                             nextResources[activityNode->resourceType] = 0;
                         }
                         
-                        currentState[activityNode->resourceType][i] = GRANTED;
+                        currentState[activityNode->resourceType][activityNode->taskNumber] = GRANTED;
                         printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n\tAvailable next cycle: %d\t\n    ",
                                activityNode->resourceAmount,
                                activityNode->resourceType+1,
@@ -262,25 +259,27 @@ void runBankers(){
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1,
                                currentResources[activityNode->resourceType]);
-                        currentState[activityNode->resourceType][i] = WAITING;
+                        currentState[activityNode->resourceType][activityNode->taskNumber] = WAITING;
                         waitingCount++;
+                        taskWaitingTable[activityNode->taskNumber] += 1;
                         minRequest[activityNode->resourceType] = min(activityNode->resourceAmount, minRequest[activityNode->resourceType]);
                         push(i, helperRequestStack);
+                        break;
                     }
                 } else {
                     perror("\nCannot perform REQUEST, previous state was not INITIATE.\n");
                     exit(2);
                 }
-                push(i, nextRequestQueue);
+                push(activityNode->taskNumber, nextRequestQueue);
                 break;
                 
             case RELEASE:
-                if (previousState[activityNode->resourceType][i] > INITIATE) {
+                if (previousState[activityNode->resourceType][activityNode->taskNumber] > INITIATE) {
                     nextResources[activityNode->resourceType] = nextResources[activityNode->resourceType] + activityNode->resourceAmount;
                     if(nextResources[activityNode->resourceType] > defaultResources[activityNode->resourceType]){
                         nextResources[activityNode->resourceType] = defaultResources[activityNode->resourceType];
                     }
-                    currentState[activityNode->resourceType][i] = RELEASE;
+                    currentState[activityNode->resourceType][activityNode->taskNumber] = RELEASE;
                     printf("\nTask %d RELEASED %d unit(s) of resource %d.\n\tUnits available next cycle: %d\n",
                            activityNode->taskNumber+1,
                            activityNode->resourceAmount,
@@ -292,16 +291,16 @@ void runBankers(){
                     exit(3);
                 }
                 
-                push(i, nextRequestQueue);
+                push(activityNode->taskNumber, nextRequestQueue);
                 break;
                 
             case TERMINATE:
                 // Set termination time
-                if(taskTimeTable[i] == 0){
-                    taskTimeTable[i] = cycle/numberOfTasks;
+                if(taskTimeTable[activityNode->taskNumber] == 0){
+                    taskTimeTable[activityNode->taskNumber] = cycle/numberOfTasks;
                 }
                 termCount++;
-                push(i, nextRequestQueue);
+                push(activityNode->taskNumber, nextRequestQueue);
                 break;
                 
             default:
@@ -310,9 +309,9 @@ void runBankers(){
         
         // On success move the pointer forward to the next activity in the linked list
         if (activityNode->type != TERMINATE
-            && currentState[activityNode->resourceType][i] != WAITING
-            && currentState[activityNode->resourceType][i] != DENIED) {
-            currentActivity[i] = currentActivity[i]->next;
+        && currentState[activityNode->resourceType][activityNode->taskNumber] != WAITING
+        && currentState[activityNode->resourceType][activityNode->taskNumber] != DENIED) {            
+            activityArray[activityNode->taskNumber] = activityArray[activityNode->taskNumber]->next;
         }
         
     }

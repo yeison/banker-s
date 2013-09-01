@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "dijkstras.c"
-         timestampString = "396240960.81893"
+         timestampString = "399762054.524435"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "132"
-         endingLineNumber = "132"
+         startingLineNumber = "164"
+         endingLineNumber = "164"
          landmarkName = "runBankers()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -21,24 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "dijkstras.c"
-         timestampString = "396239327.743493"
+         timestampString = "399762054.524435"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "17"
-         endingLineNumber = "17"
-         landmarkName = "mergeQueues()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "dijkstras.c"
-         timestampString = "396240960.81893"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "235"
-         endingLineNumber = "235"
+         startingLineNumber = "254"
+         endingLineNumber = "254"
          landmarkName = "runBankers()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -47,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "dijkstras.c"
-         timestampString = "396240960.81893"
+         timestampString = "399763381.695599"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "268"
-         endingLineNumber = "268"
+         startingLineNumber = "273"
+         endingLineNumber = "273"
          landmarkName = "runBankers()"
          landmarkType = "7">
       </FileBreakpoint>

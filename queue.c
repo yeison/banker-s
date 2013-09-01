@@ -15,6 +15,7 @@ void push( int val, queue *queue ){
     
     if (queue->head != NULL) {
         new->next = queue->head;
+        
         queue->head->previous = new;
     } else {
         queue->head = queue->tail = new;
@@ -63,6 +64,5 @@ int pop_front( queue *queue ){
     
     free(tail);
     
-    return value;
-    
+    return value;    
 }
