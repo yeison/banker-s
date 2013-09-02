@@ -189,6 +189,7 @@ void runBankers(){
                            defaultResources[activityNode->resourceType]);
                     abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, activityArray);
                     currentState[activityNode->resourceType][activityNode->taskNumber] = TERMINATE;
+                    taskTimeTable[activityNode->taskNumber] = -1;
                     push(activityNode->taskNumber, nextRequestQueue);
                     break;
                 }
@@ -205,17 +206,18 @@ void runBankers(){
                 if(previousState[activityNode->resourceType][activityNode->taskNumber] >= INITIATE){
                     
                     // If request exceeds initial claims, then abort the task
-                    if(activityNode->resourceAmount > resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]){
+                    if(activityNode->resourceAmount + resourceLockTable[activityNode->resourceType][activityNode->taskNumber] > resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]){
                         
-                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tEXCEEDS initial claim of %d\n",
+                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tTotal resources requested %d EXCEEDS initial claim of %d\n",
                                activityNode->resourceAmount,
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1,
+                               activityNode->resourceAmount + resourceLockTable[activityNode->resourceType][activityNode->taskNumber],
                                resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]);
-                        abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, activityArray);
+                        abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, nextResources, activityArray);
                         currentState[activityNode->resourceType][activityNode->taskNumber] = TERMINATE;
+                        taskTimeTable[activityNode->taskNumber] = -1; // Set time to aborted
                         push(activityNode->taskNumber, nextRequestQueue);
-
                         break;
                     }
                     
@@ -255,7 +257,7 @@ void runBankers(){
                                activityNode->taskNumber+1,
                                currentResources[activityNode->resourceType],
                                nextResources[activityNode->resourceType]);
-                        resourceLockTable[activityNode->resourceType][activityNode->taskNumber] = activityNode->resourceAmount;
+                        resourceLockTable[activityNode->resourceType][activityNode->taskNumber] += activityNode->resourceAmount;
                     } else {
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",
                                activityNode->resourceAmount,
@@ -288,7 +290,8 @@ void runBankers(){
                            activityNode->resourceAmount,
                            activityNode->resourceType+1,
                            nextResources[activityNode->resourceType]);
-                    resourceLockTable[activityNode->resourceType][activityNode->taskNumber] = activityNode->resourceAmount;
+                    resourceLockTable[activityNode->resourceType][activityNode->taskNumber] -= activityNode->resourceAmount;
+
                 } else {
                     perror("\nCannot perform RELEASE, previous state was not REQUEST or RELEASE.\n");
                     exit(3);

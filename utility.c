@@ -7,7 +7,7 @@
 //
 #include "utility.h"
 
-void abortTask(int taskNumber, int **resourceLockTable, int numberOfResourceTypes, int *currentResources, activity **currentActivity){
+void abortTask(int taskNumber, int **resourceLockTable, int numberOfResourceTypes, int *nextResources, activity **currentActivity){
     printf("\nAborting task %d\n", taskNumber+1);
     
     for (int j = 0; j < numberOfResourceTypes; j++) {
@@ -16,12 +16,12 @@ void abortTask(int taskNumber, int **resourceLockTable, int numberOfResourceType
                 
         int resourceAmount = resourceLockTable[j][taskNumber];
         
-        currentResources[j] += resourceAmount;
+        nextResources[j] += resourceAmount;
         printf("\tTask %d forced to release %d unit(s) of resource %d: %d units available next cycle\n",
                taskNumber+1,
                resourceAmount,
                j+1,
-               currentResources[j]);
+               nextResources[j]);
         
         resourceLockTable[j][taskNumber] = 0;
                 

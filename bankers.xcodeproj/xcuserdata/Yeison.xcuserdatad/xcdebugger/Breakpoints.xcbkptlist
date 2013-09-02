@@ -8,24 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "dijkstras.c"
-         timestampString = "399838969.864032"
+         timestampString = "399853350.871014"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "164"
-         endingLineNumber = "164"
-         landmarkName = "runBankers()"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "dijkstras.c"
-         timestampString = "399849814.104536"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "306"
-         endingLineNumber = "306"
+         startingLineNumber = "185"
+         endingLineNumber = "185"
          landmarkName = "runBankers()"
          landmarkType = "7">
       </FileBreakpoint>
@@ -34,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "dijkstras.c"
-         timestampString = "399850947.409847"
+         timestampString = "399854026.782537"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "305"
-         endingLineNumber = "305"
+         startingLineNumber = "209"
+         endingLineNumber = "209"
          landmarkName = "runBankers()"
          landmarkType = "7">
       </FileBreakpoint>
