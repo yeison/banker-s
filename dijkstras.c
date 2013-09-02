@@ -172,7 +172,7 @@ void runBankers(){
                    activityNode->delay);
             
             currentState[activityNode->resourceType][activityNode->taskNumber] = DELAYED;
-            push(i, nextRequestQueue);
+            push(activityNode->taskNumber, nextRequestQueue);
 
             continue;
         }
@@ -189,6 +189,7 @@ void runBankers(){
                            defaultResources[activityNode->resourceType]);
                     abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, activityArray);
                     currentState[activityNode->resourceType][activityNode->taskNumber] = TERMINATE;
+                    push(activityNode->taskNumber, nextRequestQueue);
                     break;
                 }
                 // If state is 0 (not initiated) then initiate
@@ -213,6 +214,8 @@ void runBankers(){
                                resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]);
                         abortTask(activityNode->taskNumber, resourceLockTable, numberOfResourceTypes, currentResources, activityArray);
                         currentState[activityNode->resourceType][activityNode->taskNumber] = TERMINATE;
+                        push(activityNode->taskNumber, nextRequestQueue);
+
                         break;
                     }
                     
@@ -263,7 +266,7 @@ void runBankers(){
                         waitingCount++;
                         taskWaitingTable[activityNode->taskNumber] += 1;
                         minRequest[activityNode->resourceType] = min(activityNode->resourceAmount, minRequest[activityNode->resourceType]);
-                        push(i, helperRequestStack);
+                        push(activityNode->taskNumber, helperRequestStack);
                         break;
                     }
                 } else {

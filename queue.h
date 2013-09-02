@@ -6,6 +6,8 @@
 //
 //
 //  Actually, this is a double-ended queue
+#include <stdbool.h>
+
 
 #ifndef bankers_queue_h
 #include <stdlib.h>
@@ -30,3 +32,4 @@ struct queue{
 void push( int i, queue *queue );
 int pop_front( queue *queue );
 int pop_back( queue *queue );
+bool is_empty( queue *queue );

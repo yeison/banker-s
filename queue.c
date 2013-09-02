@@ -24,7 +24,7 @@ void push( int val, queue *queue ){
     queue->head = new;
 }
 
-// Returns the head (LIFO)
+// Returns the head value (LIFO)
 int pop_back( queue *queue ){
     
     if(queue->head == NULL){
@@ -39,9 +39,10 @@ int pop_back( queue *queue ){
         queue->head = queue->tail = NULL;
     } else {
         queue->head = head->next;
+        queue->head->previous = NULL;
     }
     
-    free(head);    
+//    free(head);    
     
     return value;
 }
@@ -60,9 +61,18 @@ int pop_front( queue *queue ){
         queue->head = queue->tail = NULL;
     } else {
         queue->tail = tail->previous;
+        queue->tail->next = NULL;
     }
     
-    free(tail);
+//    free(tail);
     
     return value;    
+}
+
+bool is_empty( queue *queue ){
+    if (queue->head == NULL && queue->tail == NULL) {
+        return true;
+    }
+    
+    return false;
 }
