@@ -33,3 +33,4 @@ void push( int i, queue *queue );
 int pop_front( queue *queue );
 int pop_back( queue *queue );
 bool is_empty( queue *queue );
+void push_front( int val, queue *queue );
