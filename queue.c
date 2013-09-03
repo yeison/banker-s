@@ -24,6 +24,21 @@ void push( int val, queue *queue ){
     queue->head = new;
 }
 
+void push_front( int val, queue *queue ){
+    queue_int *new = malloc(sizeof(queue_int));
+    
+    new->value = val;
+    
+    if (queue->tail != NULL) {
+        new->previous = queue->tail;        
+        queue->tail->next = new;
+    } else {
+        queue->head = queue->tail = new;
+    }
+    
+    queue->tail = new;
+}
+
 // Returns the head value (LIFO)
 int pop_back( queue *queue ){
     
