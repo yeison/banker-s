@@ -2,9 +2,21 @@
 //  bankers
 //
 //  Created by Yeison Rodriguez on 4/17/13.
-//
 
 #include "dijkstras.h"
+
+// If my currently available resources are less than my claim, return false
+bool allResourcesAreAvailable(int taskNumber, int numberOfResourceTypes, int *currentResources, int **resourceClaimTable,
+                              int **resourceLockTable){
+    
+    for (int resourceType=0; resourceType < numberOfResourceTypes; resourceType++) {
+        if (resourceClaimTable[resourceType][taskNumber] > currentResources[resourceType] + resourceLockTable[resourceType][taskNumber] ) {
+            return false;
+        }
+    }
+    
+    return true;
+}
 
 activity* getNextActivity(activity** activityArray, queue* requestQueue){
     return activityArray[pop_front(requestQueue)];
@@ -19,7 +31,7 @@ void mergeQueues(queue** requestQueue, queue** nextRequestQueue, queue** helperR
 
     while ((*helperRequestStack)->head != NULL) {
         int stackTop = pop_back(*helperRequestStack);
-        push(stackTop, *nextRequestQueue);
+        push_front(stackTop, *nextRequestQueue);
     }
     
     *requestQueue = *nextRequestQueue;
@@ -219,17 +231,31 @@ void runBankers(){
                         taskTimeTable[activityNode->taskNumber] = -1; // Set time to aborted
                         push(activityNode->taskNumber, nextRequestQueue);
                         break;
-                    }
+                    }                                        
                     
                     // If initial claim exceeds available resources and resources have not already been allocated, deny request
-                    if(resourceClaimTable[activityNode->resourceType][activityNode->taskNumber] > currentResources[activityNode->resourceType]
-                       && resourceLockTable[activityNode->resourceType][activityNode->taskNumber] == 0){
+                    if( (resourceClaimTable[activityNode->resourceType][activityNode->taskNumber] > currentResources[activityNode->resourceType]
+                       && resourceLockTable[activityNode->resourceType][activityNode->taskNumber] == 0 )){
                         printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tIntial claim of %d EXCEEDS available unit(s) %d\n",
                                activityNode->resourceAmount,
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1,
                                resourceClaimTable[activityNode->resourceType][activityNode->taskNumber],
                                currentResources[activityNode->resourceType]);
+                        
+                        currentState[activityNode->resourceType][activityNode->taskNumber] = DENIED;
+                        // Increase the amount of time this task has been waiting
+                        taskWaitingTable[activityNode->taskNumber] += 1;
+                        push(activityNode->taskNumber, helperRequestStack);
+                        break;
+                    }
+                    
+                    // If ALL resources are not currently available, deny request
+                    if(!allResourcesAreAvailable(activityNode->taskNumber, numberOfResourceTypes, currentResources, resourceClaimTable, resourceLockTable)){
+                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tALL resources are not available \n",
+                               activityNode->resourceAmount,
+                               activityNode->resourceType+1,
+                               activityNode->taskNumber+1);
                         
                         currentState[activityNode->resourceType][activityNode->taskNumber] = DENIED;
                         // Increase the amount of time this task has been waiting
