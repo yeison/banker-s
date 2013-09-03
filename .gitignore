@@ -9,6 +9,9 @@
 *.perspectivev3
 *.pbxuser
 
+bankers.xcodeproj/project.xcworkspace/xcuserdata/Yeison.xcuserdatad/UserInterfaceState.xcuserstate
+bankers.xcodeproj/xcuserdata/Yeison.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
+bankers.xcodeproj/xcuserdata/Yeison.xcuserdatad/xcschemes/bankers.xcscheme
 
 # Generated files
 VersionX-revision.h
