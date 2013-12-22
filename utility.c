@@ -122,3 +122,19 @@ void printOutput(int *taskTimeTable, int *taskWaitingTable, int numberOfTasks){
     printf("Total: %7d %13d %11.2f%% \n\n\n", totalTime, totalTimeWaiting, (1.0*totalTimeWaiting)/totalTime);
     
 }
+
+
+// verbose printf function to use the verbose flag and call the standard printf if verbose=1
+int	 verbose_printf(const char * __restrict string, ...){
+    int result = 0;
+    
+    if(verbose){
+        va_list args;
+        va_start(args, string);
+        result = printf(string, args);
+        va_end(args);
+    }
+    
+    return result;
+        
+}

@@ -10,4 +10,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
+
+#include "dijkstras.h"
 #include "optimistic.h"
+
+#include "utility.h"

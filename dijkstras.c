@@ -23,7 +23,7 @@ activity* getNextActivity(activity** activityArray, queue* requestQueue){
 }
 
 void mergeQueues(queue** requestQueue, queue** nextRequestQueue, queue** helperRequestStack){
-
+    
     if ((*requestQueue)->head != NULL) {
         printf("SOMETHING WENT WRONG");
         exit(EXIT_FAILURE);

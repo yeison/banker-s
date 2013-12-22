@@ -15,6 +15,8 @@
 #include "limits.h"
 #include "activity.h"
 #include "queue.h"
+#include <stdarg.h>
+
 
 void copyArray(int *from, int *to, int size);
 
@@ -31,6 +33,18 @@ void copy2dArray(int **from, int **to, int x, int y);
 
 // Print the output of these runs
 void printOutput(int *taskTimeTable, int *taskWaitingTable, int numberOfTasks);
+
+// This is how we're gonna make a verbose global flag (I hope it works).
+#ifdef  MAIN_FILE
+int verbose;
+#else
+extern int verbose;
+#endif
+
+
+// Now we redefine the printf function to use that verbose flag.
+int	 verbose_printf(const char * __restrict, ...) __printflike(1, 2);
+
 
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))

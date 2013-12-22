@@ -1,13 +1,18 @@
+#define MAIN_FILE
 #include "main.h"
-#include "dijkstras.h"
-#include "optimistic.h"
+
+int verbose = 0;
 
 int main (int argc, const char * argv[]) {
-	if (argc < 2) {
+	if (argc < 2 || argc > 3) {
 		//Explain proper usage of the program at the command line.
-		printf("\tUsage: banker <name of input file> \n\n");
+		printf("\tUsage: banker <name of input file> [--verbose] \n\n");
 		exit(0);
 	}
+    
+    if( argv[2] != NULL && strcasecmp(argv[2], "--verbose") ){
+        verbose = 1;
+    }
 	
 	//Redirect standard input stream to the file provided as the first argument.
 	stdin = fopen(argv[1], "r");
