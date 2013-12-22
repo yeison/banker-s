@@ -100,7 +100,7 @@ void printOutput(int *taskTimeTable, int *taskWaitingTable, int numberOfTasks){
     int totalTimeWaiting = 0;
 
     printf("Output:\n");
-    printf("\t\tTime \tWaiting \tWaiting \n");
+    printf("Task    %6s %13s  %11s \n", "Time", "Time waiting", "% Waiting");
     for (int i=0; i < numberOfTasks; i++) {
         int time = taskTimeTable[i];
         
@@ -116,9 +116,9 @@ void printOutput(int *taskTimeTable, int *taskWaitingTable, int numberOfTasks){
         
         double percentWaiting = (1.0*tWaiting)/time;
         
-        printf("Task %d: %4d %10d %11.2f \n", i+1, time, tWaiting, percentWaiting);
+        printf("Task %d: %6d %13d %11.2f%% \n", i+1, time, tWaiting, percentWaiting);
     }
     
-    printf("Total: %5d %10d %11.2f \n\n\n", totalTime, totalTimeWaiting, (1.0*totalTimeWaiting)/totalTime);
+    printf("Total: %7d %13d %11.2f%% \n\n\n", totalTime, totalTimeWaiting, (1.0*totalTimeWaiting)/totalTime);
     
 }

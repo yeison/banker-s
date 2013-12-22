@@ -1,14 +1,26 @@
-banker: main.o activity.o debugging.o
-	gcc -o banker main.o activity.o debugging.o
+banker: main.o activity.o debugging.o utility.o dijkstras.o optimistic.o queue.o
+	clang -o banker main.o activity.o debugging.o utility.o dijkstras.o optimistic.o queue.o
 
 main.o: main.c main.h
-	gcc -std=c99 -c main.c
+	clang -std=c99 -c main.c
 
 activity.o: activity.c activity.h
-	gcc -std=c99 -c activity.c
+	clang -std=c99 -c activity.c
 
 debugging.o: debugging.c debugging.h
-	gcc -std=c99 -c debugging.c
+	clang -std=c99 -c debugging.c
+
+utility.o: utility.c utility.h
+	clang -std=c99 -c utility.c
+
+dijkstras.o: dijkstras.c dijkstras.h
+	clang -std=c99 -c dijkstras.c
+	
+optimistic.o: optimistic.c optimistic.h
+	clang -std=c99 -c optimistic.c
+
+queue.o: queue.c queue.h
+	clang -std=c99 -c queue.c
 
 clean:
-	rm banker main.o activity.o debugging.o
+	rm banker main.o activity.o debugging.o utility.o dijkstras.o optimistic.o queue.o
