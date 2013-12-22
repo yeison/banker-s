@@ -1,9 +1,26 @@
-Error checking:
-    Input:
-        Check order of activities for each task
+Two primary files:
+    optimistic.c
+    dijkstras.c
+    
+    both are executed from the entry point, which is main.c
+    
+    As their names indicate- optimistic.c contains an implementation of the optimistic algorithm, 
+    and dijkstras.c contains banker's algorithm.  The files have respective runOptimistic and 
+    runBanker functions that initiate the program logic.
 
 
-Don't forget to free memory allocations
+Major data structures:
+    A double-ended queue (dequeue) can be found in queue.c
+    
+    activitiy.c creates nodes for each activity, and arranges them in a linked list.
+    
+    The algorithms have numerous arrays and two-dimensional arrays that act as lookup tables for
+    both values and for storing pointers to the Heads/Tails of the queues and linked-lists.  More
+    comments can be found in the code preceding the initialization of these structures.
+    
+    There is a paradigm used throughout the application where certain tables will have copies that
+    are used to preserve the current states of certain values, and a copy that is meant to be updated
+    and will maintain the state values for a future cycle.
+    
 
-If initial claim is exceeded for bankers, abort task, print error message
 
