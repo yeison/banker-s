@@ -6,7 +6,7 @@ Two primary files:
     
     As their names indicate- optimistic.c contains an implementation of the optimistic algorithm, 
     and dijkstras.c contains banker's algorithm.  The files have respective runOptimistic and 
-    runBanker functions that perform as their names imply.
+    runBanker functions that initiate the program logic.
 
 
 Major data structures:
