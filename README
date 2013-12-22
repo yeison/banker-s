@@ -3,6 +3,8 @@ Two primary files:
     dijkstras.c
     
     both are executed from the entry point, which is main.c
+    
+    As their names indicate, optimistic.c contains an implementation of the optimistic algorithm, and dijkstras.c contains banker's algorithm.
 
 
 Major data structures:
