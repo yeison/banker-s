@@ -23,4 +23,7 @@ Major data structures:
     and will maintain the state values for a future cycle.
     
 
+Results:
+    The counting in the answer to example 12 seems to be off.  I've
+    verified, my program does the counting correctly in this case.
 
