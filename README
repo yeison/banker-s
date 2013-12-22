@@ -24,13 +24,3 @@ Major data structures:
     
 
 
-Error checking:
-    Input:
-        Check order of activities for each task
-
-
-Don't forget to free memory allocations
-
-If initial claim is exceeded for bankers, abort task, print error message
-
-
