@@ -1,3 +1,9 @@
+BUILD:
+    make
+  
+RUN:
+    ./banker input/01.txt
+
 Two primary files:
     optimistic.c
     dijkstras.c
