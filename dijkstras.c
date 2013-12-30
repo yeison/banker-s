@@ -128,8 +128,8 @@ void runBankers(){
     for (int i = 0; i < numberOfResourceTypes; i++) {
         minRequest[i] = INT_MAX;
     }
-    printf("\nCycle: %d\n", cycle+1);
-    printf("**************\n");
+    verbose_printf("\nCycle: %d\n", cycle+1);
+    verbose_printf("**************\n");
     
     // While all tasks have not been terminated
     while (termCount < numberOfTasks) {
@@ -160,8 +160,8 @@ void runBankers(){
             termCount = 0;
             waitingCount = 0;
             i = 0;
-            printf("\nCycle: %d\n", (cycle/numberOfTasks));
-            printf("**************\n");
+            verbose_printf("\nCycle: %d\n", (cycle/numberOfTasks));
+            verbose_printf("**************\n");
         }
         
         // If there are no more activities for this task, continue to next task
@@ -178,7 +178,7 @@ void runBankers(){
         // If the activity has a delay, skip it until the delay is exhausted
         if(activityNode->type != TERMINATE && activityNode->type != INITIATE && activityNode->delay > 0){
             activityNode->delay--;
-            printf("\nTask %d skipping delayed activity: %s\n\tRemaining delay: %d\n",
+            verbose_printf("\nTask %d skipping delayed activity: %s\n\tRemaining delay: %d\n",
                    activityNode->taskNumber+1,
                    getActivityType(activityNode->type),
                    activityNode->delay);
@@ -194,7 +194,7 @@ void runBankers(){
                 // If claim exceeds total resource, then abort the task
                 if(activityNode->resourceAmount > defaultResources[activityNode->resourceType]){
                     
-                    printf("\nCould NOT claim %d unit(s) of resource %d for task %d: \n\tClaim EXCEEDS total available resources: %d\n",
+                    verbose_printf("\nCould NOT claim %d unit(s) of resource %d for task %d: \n\tClaim EXCEEDS total available resources: %d\n",
                            activityNode->resourceAmount,
                            activityNode->resourceType+1,
                            activityNode->taskNumber+1,
@@ -220,7 +220,7 @@ void runBankers(){
                     // If request exceeds initial claims, then abort the task
                     if(activityNode->resourceAmount + resourceLockTable[activityNode->resourceType][activityNode->taskNumber] > resourceClaimTable[activityNode->resourceType][activityNode->taskNumber]){
                         
-                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tTotal resources requested %d EXCEEDS initial claim of %d\n",
+                        verbose_printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tTotal resources requested %d EXCEEDS initial claim of %d\n",
                                activityNode->resourceAmount,
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1,
@@ -236,7 +236,7 @@ void runBankers(){
                     // If initial claim exceeds available resources and resources have not already been allocated, deny request
                     if( (resourceClaimTable[activityNode->resourceType][activityNode->taskNumber] > currentResources[activityNode->resourceType]
                        && resourceLockTable[activityNode->resourceType][activityNode->taskNumber] == 0 )){
-                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tIntial claim of %d EXCEEDS available unit(s) %d\n",
+                        verbose_printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tIntial claim of %d EXCEEDS available unit(s) %d\n",
                                activityNode->resourceAmount,
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1,
@@ -252,7 +252,7 @@ void runBankers(){
                     
                     // If ALL resources are not currently available, deny request
                     if(!allResourcesAreAvailable(activityNode->taskNumber, numberOfResourceTypes, currentResources, resourceClaimTable, resourceLockTable)){
-                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tALL resources are not available \n",
+                        verbose_printf("\nCould NOT grant %d unit(s) of resource %d to task %d: \n\tALL resources are not available \n",
                                activityNode->resourceAmount,
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1);
@@ -277,7 +277,7 @@ void runBankers(){
                         }
                         
                         currentState[activityNode->resourceType][activityNode->taskNumber] = GRANTED;
-                        printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n\tAvailable next cycle: %d\t\n    ",
+                        verbose_printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n\tAvailable next cycle: %d\t\n    ",
                                activityNode->resourceAmount,
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1,
@@ -285,7 +285,7 @@ void runBankers(){
                                nextResources[activityNode->resourceType]);
                         resourceLockTable[activityNode->resourceType][activityNode->taskNumber] += activityNode->resourceAmount;
                     } else {
-                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",
+                        verbose_printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",
                                activityNode->resourceAmount,
                                activityNode->resourceType+1,
                                activityNode->taskNumber+1,
@@ -311,7 +311,7 @@ void runBankers(){
                         nextResources[activityNode->resourceType] = defaultResources[activityNode->resourceType];
                     }
                     currentState[activityNode->resourceType][activityNode->taskNumber] = RELEASE;
-                    printf("\nTask %d RELEASED %d unit(s) of resource %d.\n\tUnits available next cycle: %d\n",
+                    verbose_printf("\nTask %d RELEASED %d unit(s) of resource %d.\n\tUnits available next cycle: %d\n",
                            activityNode->taskNumber+1,
                            activityNode->resourceAmount,
                            activityNode->resourceType+1,

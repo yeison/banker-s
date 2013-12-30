@@ -45,6 +45,7 @@ void runOptimistic(){
 	}
     
 	/*** Test the first line of input ***/
+    printf("================= OPTIMISTIC ==================\n\n");
 	printf(" Number of Tasks: %d\n", numberOfTasks);
 	printf(" Number of Resource Types: %d\n", numberOfResourceTypes);
 	for (int i = 0; i < numberOfResourceTypes; i++) {
@@ -81,8 +82,8 @@ void runOptimistic(){
     for (int i = 0; i < numberOfResourceTypes; i++) {
         minRequest[i] = INT_MAX;
     }
-    printf("\nCycle: %d\n", cycle+1);
-    printf("**************\n");
+    verbose_printf("\nCycle: %d\n", cycle+1);
+    verbose_printf("**************\n");
     
     // While all tasks have not been terminated
     while (termCount < numberOfTasks) {
@@ -112,8 +113,8 @@ void runOptimistic(){
             termCount = 0;
             waitingCount = 0;
             i = 0;
-            printf("\nCycle: %d\n", (cycle/numberOfTasks));
-            printf("**************\n");
+            verbose_printf("\nCycle: %d\n", (cycle/numberOfTasks));
+            verbose_printf("**************\n");
         }
         
         // If there are no more activities for this task, continue to next task
@@ -130,7 +131,7 @@ void runOptimistic(){
         // If the activity has a delay, skip it until the delay is exhausted
         if(activityN->type != TERMINATE && activityN->type != INITIATE && activityN->delay > 0){
             activityN->delay--;
-            printf("\nTask %d skipping delayed activity: %s\n\tRemaining delay: %d\n", activityN->taskNumber+1, getActivityType(activityN->type), activityN->delay);
+            verbose_printf("\nTask %d skipping delayed activity: %s\n\tRemaining delay: %d\n", activityN->taskNumber+1, getActivityType(activityN->type), activityN->delay);
             currentState[activityN->resourceType][i] = DELAYED;
             continue;
         }
@@ -156,7 +157,7 @@ void runOptimistic(){
                         }
                         
                         currentState[activityN->resourceType][i] = GRANTED;
-                        printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n\tAvailable next cyle: %d\n",
+                        verbose_printf("\nGRANTED %d unit(s) of resource %d to task %d.\n\tRemaining: %d\n\tAvailable next cyle: %d\n",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
                                activityN->taskNumber+1,
@@ -164,7 +165,7 @@ void runOptimistic(){
                                nextResources[activityN->resourceType]);
                         resourceLockTable[activityN->resourceType][activityN->taskNumber] = activityN->resourceAmount;
                     } else {
-                        printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",
+                        verbose_printf("\nCould NOT grant %d unit(s) of resource %d to task %d: only %d available\n",
                                activityN->resourceAmount,
                                activityN->resourceType+1,
                                activityN->taskNumber+1,
@@ -187,7 +188,7 @@ void runOptimistic(){
                         nextResources[activityN->resourceType] = defaultResources[activityN->resourceType];
                     }
                     currentState[activityN->resourceType][i] = RELEASE;
-                    printf("\nTask %d RELEASED %d unit(s) of resource %d.\n\tUnits available next cycle: %d\n",
+                    verbose_printf("\nTask %d RELEASED %d unit(s) of resource %d.\n\tUnits available next cycle: %d\n",
                            activityN->taskNumber+1,
                            activityN->resourceAmount,
                            activityN->resourceType+1,

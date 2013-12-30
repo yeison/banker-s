@@ -10,7 +10,8 @@ int main (int argc, const char * argv[]) {
 		exit(0);
 	}
     
-    if( argv[2] != NULL && strcasecmp(argv[2], "--verbose") ){
+    char vstring[] = "--verbose";
+    if( argv[2] != NULL && strcasecmp(argv[2], vstring)==0 ){
         verbose = 1;
     }
 	

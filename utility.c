@@ -4,7 +4,7 @@
 //
 //  Created by Yeison Rodriguez on 4/17/13.
 //
-//
+
 #include "utility.h"
 
 void abortTask(int taskNumber, int **resourceLockTable, int numberOfResourceTypes, int *nextResources, activity **currentActivity){
@@ -131,7 +131,7 @@ int	 verbose_printf(const char * __restrict string, ...){
     if(verbose){
         va_list args;
         va_start(args, string);
-        result = printf(string, args);
+        result = vprintf(string, args);
         va_end(args);
     }
     
